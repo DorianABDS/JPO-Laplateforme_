@@ -1,43 +1,36 @@
 # User Stories
 
-## 🥇 User Stories prioritaires (MVP)
+## Utilisateur : Étudiant
 
-### 1. Page d’accueil
-**En tant qu’utilisateur**, je veux voir une page d’accueil afin de comprendre la finalité de l'application.
+- En tant qu'étudiant, je veux consulter la liste des JPO disponibles afin de choisir celles auxquelles participer.
+- En tant qu'étudiant, je veux m'inscrire à une JPO afin de réserver ma place.
+- En tant qu'étudiant, je veux me désinscrire d'une JPO afin de libérer ma place en cas d'empêchement.
+- En tant qu'étudiant, je veux recevoir un e-mail de rappel avant la JPO afin de ne pas oublier d'y assister.
+- En tant qu'étudiant, je veux rechercher une JPO par ville ou campus afin de trouver les événements proches de chez moi.
+- En tant qu'étudiant, je veux pouvoir laisser un commentaire ou un avis sur une JPO pour partager mon expérience.
 
----
+## Utilisateur : Modérateur
 
-### 2. Inscription
-**En tant qu’utilisateur**, je veux pouvoir créer un compte afin d’accéder aux fonctionnalités.
+- En tant que modérateur, je veux pouvoir voir les commentaires publiés afin d’en vérifier le contenu.
+- En tant que modérateur, je veux pouvoir répondre à un commentaire afin d’interagir avec les étudiants.
+- En tant que modérateur, je veux pouvoir supprimer un commentaire inapproprié pour garantir la qualité des échanges.
 
----
+## Utilisateur : Recruteur / Équipe marketing
 
-### 3. Connexion
-**En tant qu’utilisateur**, je veux me connecter afin de personnaliser mon expérience.
+- En tant que recruteur, je veux accéder à un tableau de bord pour gérer les JPO (ajout/modification/suppression).
+- En tant que recruteur, je veux pouvoir fixer la capacité d’inscrits pour chaque JPO afin de gérer les limites de places.
+- En tant que recruteur, je veux consulter les statistiques de participation pour mesurer l’intérêt généré.
+- En tant que recruteur, je veux modifier les infos pratiques affichées sur le site (lieu, horaires, contacts…).
+- En tant que recruteur, je veux voir et gérer les commentaires laissés par les participants.
+- En tant que recruteur, je veux pouvoir créer ou modifier les sessions à venir.
 
----
+## Utilisateur : Administrateur
 
-### 4. Affichage du profil
-**En tant qu’utilisateur connecté**, je veux voir mon profil afin de vérifier mes informations.
+- En tant qu'administrateur, je veux attribuer des rôles aux membres de l'équipe afin de sécuriser les accès.
+- En tant qu'administrateur, je veux restreindre certaines actions selon le rôle (ex. : seul un chef peut supprimer une JPO).
+- En tant qu'administrateur, je veux superviser toute l’activité sur la plateforme pour garantir sa cohérence.
 
----
+## Utilisateur : Invité (non connecté)
 
-### 5. Déconnexion
-**En tant qu’utilisateur connecté**, je veux pouvoir me déconnecter afin de sécuriser mon compte.
-
----
-
-## 🥈 User Stories secondaire (Une fois le MVP fini)
-
-> (non prioritaires mais à envisager)
-
-- **En tant qu’utilisateur**, je veux pouvoir modifier mon profil afin de garder mes informations à jour.
-- **En tant qu’utilisateur**, je veux recevoir un message d’erreur clair si je saisis de mauvais identifiants.
-- **En tant qu’utilisateur**, je veux qu’un message de confirmation s’affiche après mon inscription ou ma connexion réussie.
-
----
-
-## ✅ MVP = Livraison en 2 semaines
-
-Le MVP sera considéré comme terminé lorsque toutes les user stories prioritaires ci-dessus seront **implémentées, testées et utilisables**.
-
+- En tant qu'invité, je veux consulter les informations sur les JPO disponibles sans avoir à m’inscrire.
+- En tant qu'invité, je veux m’inscrire sur la plateforme pour accéder aux fonctionnalités avancées.
