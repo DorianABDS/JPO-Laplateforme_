@@ -1,0 +1,10 @@
+{
+    "name": "jpo-laplateforme/backend",
+    "description": "backend",
+    "autoload": {
+        "psr-4": {
+            "JpoLaplateforme\\Backend\\": "src/"
+        }
+    },
+    "require": {}
+}
