@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: "", element: <Home /> },
-      // { path: "jpo/:id", element: <JpoDetail /> },
+      { path: "jpo/:id", element: <JpoDetail /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
       { path: "profile", element: <Profile /> },
