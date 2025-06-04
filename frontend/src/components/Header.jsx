@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // icônes modernes (si tu veux, ou remplace par texte)
+import { Menu, X } from "lucide-react"; 
 import logoLaplateforme from "../assets/img/Logo_Plateforme_bleu.svg";
 
 export default function Header() {
