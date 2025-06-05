@@ -8,7 +8,7 @@ export default function AppLayout() {
         <Header />
       </header>
 
-      <main className="flex-1 overflow-auto">
+      <main className="bg-gray-400 flex-1 overflow-auto">
         <Outlet />
       </main>
     </div>
