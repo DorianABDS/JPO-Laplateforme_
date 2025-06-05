@@ -21,19 +21,19 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section
-        className="bg-cover bg-center px-20 flex flex-col justify-center text-white"
+        className="bg-cover bg-center px-4 sm:px-8 md:px-20 flex flex-col justify-center text-white"
         style={{
           backgroundImage: `url(${HeroImg})`,
           minHeight: "calc(100vh - 4rem)",
         }}
       >
-        <h1 className="text-9xl font-trench mb-2">LaPlateforme</h1>
-        <p className="max-w-2xl text-xl font-Poppins ">
-          Découvrez nos campus grâce à nos journée porte ouverte, rencontrez nos enseignants et explorez nos
-          formations.
+        <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-trench mb-2">LaPlateforme</h1>
+        <p className="max-w-2xl text-base sm:text-lg md:text-xl font-Poppins mb-6">
+          Découvrez nos campus grâce à nos journée porte ouverte, rencontrez nos enseignants et explorez nos formations.
         </p>
         <Button />
       </section>
+
 
       {/* Liste des JPO */}
       <section className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
