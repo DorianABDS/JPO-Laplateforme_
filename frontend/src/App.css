@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Poppins;
+  font-family: 'Poppins', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,12 +17,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
 }
-a:hover {
-  color: #535bf2;
+
+@font-face {
+  font-family: 'TrenchSlab';
+  src: url('./assets/fonts/TrenchSlab-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
 }
