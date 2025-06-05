@@ -1,13 +1,16 @@
-import Header from "../components/Header";
 import { Outlet } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function AppLayout() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-1 bg-gray-600">
+    <div className="min-h-screen flex flex-col">
+      <header>
+        <Header />
+      </header>
+
+      <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
     </div>
   );
-};
+}
