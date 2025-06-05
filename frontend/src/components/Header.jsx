@@ -13,7 +13,7 @@ export default function Header() {
       </Link>
 
       {/* Desktop nav */}
-      <div className="hidden md:flex gap-4 mx-10 items-center">
+      <div className="hidden md:flex gap-4 items-center">
         <Link
           to=""
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
