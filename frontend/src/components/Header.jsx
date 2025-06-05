@@ -7,17 +7,18 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md py-4 px-6 md:px-20 flex justify-between items-center relative">
+    <nav className="bg-white shadow-md py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 relative">
       <Link to="/">
         <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-10" />
       </Link>
 
       {/* Desktop nav */}
       <div className="hidden md:flex gap-4 mx-10">
-        <Link to="/" className="hover:text-blue-500">Accueil</Link>
-        <Link to="/profile" className="hover:text-blue-500">Profil</Link>
-        <Link to="/inscription" className="hover:text-blue-500">Inscription</Link>
-        <Link to="/login" className="hover:text-blue-500">Connexion</Link>
+        <Link to="/" className="font-Poppins font-medium text-lg text-[#0062FF] hover:text-[#353535]">Accueil</Link>
+        <Link to="/profile" className="font-Poppins font-medium text-lg text-[#0062FF] hover:text-[#353535]">Profil</Link>
+        <Link to="/evenements" className="font-Poppins font-medium text-lg text-[#0062FF] hover:text-[#353535]">Événements</Link>
+        <Link to="/inscription" className="font-Poppins font-medium text-lg text-[#0062FF] hover:text-[#353535]">Inscription</Link>
+        <Link to="/login" className="font-Poppins font-medium text-lg text-[#0062FF] hover:text-[#353535]">Connexion</Link>
       </div>
 
       {/* Mobile toggle button */}
