@@ -1,6 +1,3 @@
-// src/services/apiConfig.js
-// Configuration centralisée de l'API
-
 export const API_CONFIG = {
   // URL de base de l'API (depuis les variables d'environnement)
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -72,4 +69,15 @@ export const log = (level, message, data = null) => {
     default:
       console.log(logMessage, data || '');
   }
+};
+
+// Props pour les fonctions utilitaires
+buildUrl.propTypes = {
+  endpoint: PropTypes.string.isRequired
+};
+
+log.propTypes = {
+  level: PropTypes.oneOf(['error', 'warn', 'info', 'debug']).isRequired,
+  message: PropTypes.string.isRequired,
+  data: PropTypes.any
 };

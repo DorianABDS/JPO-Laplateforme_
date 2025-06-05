@@ -1,7 +1,5 @@
-// src/services/apiHooks.js
-// Hooks React personnalisés pour l'API
-
 import { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { getJpoList, getJpoById, checkApiHealth, ApiError } from './api.js';
 
 // === HOOK GÉNÉRIQUE POUR LES REQUÊTES API ===
@@ -180,116 +178,22 @@ export const useApiHealth = (checkInterval = 30000) => {
   };
 };
 
-// === HOOK POUR LA PAGINATION (bonus) ===
-export const useJpoPagination = (itemsPerPage = 10) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [params, setParams] = useState({});
-  
-  const {
-    jpos: allJpos,
-    loading,
-    error,
-    reload
-  } = useJpoList(true, params);
-
-  // Calcul des données paginées
-  const totalItems = allJpos?.length || 0;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentJpos = allJpos?.slice(startIndex, endIndex) || [];
-
-  // Fonctions de navigation
-  const goToPage = useCallback((page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  }, [totalPages]);
-
-  const nextPage = useCallback(() => {
-    goToPage(currentPage + 1);
-  }, [currentPage, goToPage]);
-
-  const previousPage = useCallback(() => {
-    goToPage(currentPage - 1);
-  }, [currentPage, goToPage]);
-
-  // Reset de la pagination quand les paramètres changent
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [JSON.stringify(params)]);
-
-  return {
-    // Données
-    jpos: currentJpos,
-    allJpos,
-    loading,
-    error,
-    
-    // Pagination
-    currentPage,
-    totalPages,
-    totalItems,
-    itemsPerPage,
-    
-    // Navigation
-    goToPage,
-    nextPage,
-    previousPage,
-    canGoNext: currentPage < totalPages,
-    canGoPrevious: currentPage > 1,
-    
-    // Filtres/Recherche
-    params,
-    setParams,
-    reload,
-  };
+// Props pour les hooks
+useApiRequest.propTypes = {
+  apiFunction: PropTypes.func.isRequired,
+  initialData: PropTypes.any
 };
 
-// === HOOK POUR LA RECHERCHE (bonus) ===
-export const useJpoSearch = (debounceMs = 500) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const timeoutRef = useRef(null);
+useJpoList.propTypes = {
+  autoLoad: PropTypes.bool,
+  params: PropTypes.object
+};
 
-  // Debounce du terme de recherche
-  useEffect(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+useJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  autoLoad: PropTypes.bool
+};
 
-    timeoutRef.current = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, debounceMs);
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [searchTerm, debounceMs]);
-
-  // Chargement des JPO avec recherche
-  const {
-    jpos,
-    loading,
-    error,
-    reload
-  } = useJpoList(true, debouncedSearchTerm ? { search: debouncedSearchTerm } : {});
-
-  // Fonction pour nettoyer la recherche
-  const clearSearch = useCallback(() => {
-    setSearchTerm('');
-  }, []);
-
-  return {
-    jpos,
-    loading,
-    error,
-    searchTerm,
-    setSearchTerm,
-    clearSearch,
-    reload,
-    isSearching: searchTerm !== debouncedSearchTerm,
-  };
+useApiHealth.propTypes = {
+  checkInterval: PropTypes.number
 };
