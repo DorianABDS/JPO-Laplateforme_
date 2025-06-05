@@ -6,7 +6,7 @@ export default function Button() {
   return (
     <button
       onClick={() => navigate("/events")}
-      className="text-xl sm:text-2xl font-semibold my-5 bg-[#0062FF] hover:bg-[#21497e] h-14 sm:h-16 w-full sm:w-64 rounded-full transition"
+      className="text-xl sm:text-2xl font-semibold my-5 bg-[#0062FF] hover:bg-[#0051cc] h-14 sm:h-16 w-full sm:w-64 rounded-full transition"
     >
       Explorer nos JPO
     </button>
