@@ -29,6 +29,11 @@ export default function Header() {
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
           Événements
         </Link>
+        <Link
+          to="/adminboard"
+          className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
+          Admin
+        </Link>
 
         <Link
           to="/inscription"
