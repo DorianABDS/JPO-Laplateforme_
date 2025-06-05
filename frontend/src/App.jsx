@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Events from "./pages/Events";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import './App.css';
 import { Children } from "react";
@@ -15,9 +16,10 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <Home /> },
       // { path: "jpo/:id", element: <JpoDetail /> },
+      { path: "profile", element: <Profile /> },
+      { path: "events", element: <Events /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      { path: "profile", element: <Profile /> },
       { path: "*", element: <NotFound /> },
     ],
   },
