@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CardJPO from "../components/CardJPO";
 import HeroImg from "../assets/img/bg-hero5.jpg";
-import Button from "../components/Button";
 import ButtonHero from "../components/ButtonHero";
 
 export default function Home() {
