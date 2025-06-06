@@ -18,6 +18,7 @@ export const API_CONFIG = {
   
   // Endpoints de l'API
   ENDPOINTS: {
+    // Endpoints existants
     PING: '/api/ping',
     JPO: '/api/jpo',
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
@@ -32,6 +33,10 @@ export const API_CONFIG = {
     FORBIDDEN: 'Accès interdit',
     TIMEOUT: 'Délai d\'attente dépassé',
     UNKNOWN: 'Une erreur inattendue s\'est produite',
+    DATABASE_ERROR: 'Erreur lors de l\'accès à la base de données',
+    TABLE_NOT_FOUND: 'Table non trouvée dans la base de données',
+    USER_NOT_FOUND: 'Utilisateur non trouvé',
+    VALIDATION_ERROR: 'Données invalides',
   },
   
   // Activer/désactiver les logs selon l'environnement
