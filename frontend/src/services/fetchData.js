@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiRequest } from './api.js';
 import { API_CONFIG } from './apiConfig.js';
 
@@ -27,6 +28,12 @@ export const fetchData = async (endpoint, options = {}) => {
     console.error(`❌ Erreur fetchData ${endpoint}:`, error);
     throw error;
   }
+};
+
+// PropTypes pour fetchData
+fetchData.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.object
 };
 
 /**
@@ -68,6 +75,12 @@ export const useFetchData = (endpoint, options = {}) => {
   };
 };
 
+// PropTypes pour useFetchData
+useFetchData.propTypes = {
+  endpoint: PropTypes.string,
+  options: PropTypes.object
+};
+
 // === FONCTIONS SPÉCIFIQUES POUR VOS DONNÉES ===
 // Utilisant vos endpoints existants + nouveaux
 
@@ -78,12 +91,22 @@ export const getUsers = async (params = {}) => {
   return await fetchData(API_CONFIG.ENDPOINTS.USER_LIST || '/api/users', params);
 };
 
+// PropTypes pour getUsers
+getUsers.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Récupère un utilisateur par ID
  */
 export const getUser = async (userId) => {
   if (!userId) throw new Error('User ID requis');
   return await fetchData(API_CONFIG.ENDPOINTS.USER_GET(userId));
+};
+
+// PropTypes pour getUser
+getUser.propTypes = {
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 /**
@@ -93,12 +116,22 @@ export const getJpos = async (params = {}) => {
   return await fetchData(API_CONFIG.ENDPOINTS.JPO, params);
 };
 
+// PropTypes pour getJpos
+getJpos.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Récupère une JPO par ID (utilise votre fonction existante)
  */
 export const getJpo = async (jpoId) => {
   if (!jpoId) throw new Error('JPO ID requis');
   return await fetchData(API_CONFIG.ENDPOINTS.JPO_BY_ID(jpoId));
+};
+
+// PropTypes pour getJpo
+getJpo.propTypes = {
+  jpoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 /**
@@ -115,11 +148,21 @@ export const getRegistrations = async (params = {}) => {
   return await fetchData('/api/registrations', params);
 };
 
+// PropTypes pour getRegistrations
+getRegistrations.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Récupère les commentaires
  */
 export const getComments = async (params = {}) => {
   return await fetchData('/api/comments', params);
+};
+
+// PropTypes pour getComments
+getComments.propTypes = {
+  params: PropTypes.object
 };
 
 /**
@@ -139,12 +182,22 @@ export const useUsers = (params = {}) => {
   return useFetchData(API_CONFIG.ENDPOINTS.USER_LIST || '/api/users', params);
 };
 
+// PropTypes pour useUsers
+useUsers.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Hook pour récupérer un utilisateur spécifique
  */
 export const useUser = (userId) => {
   const endpoint = userId ? API_CONFIG.ENDPOINTS.USER_GET(userId) : null;
   return useFetchData(endpoint);
+};
+
+// PropTypes pour useUser
+useUser.propTypes = {
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 /**
@@ -161,11 +214,21 @@ export const useRegistrations = (params = {}) => {
   return useFetchData('/api/registrations', params);
 };
 
+// PropTypes pour useRegistrations
+useRegistrations.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Hook pour récupérer les commentaires
  */
 export const useComments = (params = {}) => {
   return useFetchData('/api/comments', params);
+};
+
+// PropTypes pour useComments
+useComments.propTypes = {
+  params: PropTypes.object
 };
 
 /**
