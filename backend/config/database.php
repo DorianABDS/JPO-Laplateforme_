@@ -1,5 +1,11 @@
 <?php
 
+namespace Config;
+
+use Exception;
+use PDO;
+use PDOException;
+
 class Database
 {
     private $host;
@@ -14,7 +20,7 @@ class Database
     {
         // Charger les variables d'environnement depuis le fichier .env
         $this->loadEnv();
-        
+
         $this->host = $_ENV['DB_HOST'] ?? 'localhost';
         $this->dbname = $_ENV['DB_NAME'] ?? '';
         $this->username = $_ENV['DB_USER'] ?? '';
@@ -29,18 +35,18 @@ class Database
     private function loadEnv()
     {
         $envFile = __DIR__ . '/../.env';
-        
+
         if (!file_exists($envFile)) {
             throw new Exception("Le fichier .env n'existe pas");
         }
 
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
                 continue; // Ignorer les commentaires
             }
-            
+
             list($name, $value) = explode('=', $line, 2);
             $_ENV[trim($name)] = trim($value);
         }
@@ -55,7 +61,7 @@ class Database
         if ($this->pdo === null) {
             try {
                 $dsn = "mysql:host={$this->host};dbname={$this->dbname};port={$this->port};charset={$this->charset}";
-                
+
                 $options = [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -63,7 +69,6 @@ class Database
                 ];
 
                 $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
-                
             } catch (PDOException $e) {
                 throw new Exception("Erreur de connexion à la base de données : " . $e->getMessage());
             }
