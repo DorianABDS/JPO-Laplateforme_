@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <nav className="bg-white shadow-md py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 relative">
       <Link to="/">
-        <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-28 p-0" />
+        <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-24 p-0" />
       </Link>
 
       {/* Desktop nav */}
