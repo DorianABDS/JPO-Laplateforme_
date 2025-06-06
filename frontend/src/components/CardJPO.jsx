@@ -1,47 +1,88 @@
 import React from "react";
+import CountdownTimer from "./TimerCountdown";
+import Button from "./Button";
+import { Calendar, Users, MapPin, Clock } from "lucide-react";
 
 export default function CardJPO({ jpo }) {
+  const createDateTime = (dateStr, timeStr) => {
+    const date = new Date(dateStr);
+    if (!timeStr) return date;
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    date.setHours(hours ?? 0, minutes ?? 0, 0, 0);
+    return date;
+  };
+
+  const openingHour = "14:00";
+  const targetDateWithTime = createDateTime(jpo.date, openingHour);
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="w-[60%] mx-auto mb-10 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="flex flex-col md:flex-row">
-        {/* Section image */}
-        <div className="md:w-1/2">
+        {/* Image */}
+        <div className="md:w-1/2 h-48 md:h-auto">
           <img
-            src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-            alt="Campus universitaire moderne avec couloirs spacieux"
-            className="w-full h-64 md:h-full object-cover"
+            src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+            alt="Campus universitaire"
+            className="w-full h-full object-cover"
           />
         </div>
 
-        {/* Section contenu */}
-        <div className="md:w-1/2 bg-blue-600 text-white p-10 rounded-xl shadow-lg flex flex-col justify-center">
-          <div className="space-y-6">
-            <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">
-              {jpo.name}
-            </h1>
+        {/* Contenu */}
+        <div className="md:w-1/2 bg-[#0062FF] text-white p-6 flex flex-col justify-between rounded-br-xl">
+          <div className="space-y-2">
+            <h2 className="text-xl md:text-2xl font-bold">{jpo.name}</h2>
 
-            <div className="space-y-2 text-white/90">
+            {/* Countdown avec largeur flexible */}
+            <div className="w-full min-w-0">
+              <CountdownTimer targetDate={targetDateWithTime} />
+            </div>
+
+            <div className="space-y-1 text-white/90 text-xs md:text-sm">
               <p className="flex items-center gap-2">
-                <span>Date :</span><strong>{jpo.date}</strong>
+                <Calendar className="w-4 h-4" />
+                <span>
+                  {new Date(jpo.date).toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
               </p>
+
               <p className="flex items-center gap-2">
-                <span>Capacité :</span>{" "}
-                <strong>{jpo.max_capacity} personnes</strong>
+                <Clock className="w-4 h-4" />
+                <span>
+                  Ouverture : <strong>9h00</strong>
+                </span>
               </p>
+
               <p className="flex items-center gap-2">
-                <span>Lieu :</span><strong>{jpo.campus_id}</strong>
+                <Users className="w-4 h-4" />
+                <span>
+                  Capacité : <strong>{jpo.max_capacity}</strong>
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span>
+                  Lieu : <strong>{jpo.campus_id}</strong>
+                </span>
               </p>
             </div>
 
-            <p className="text-lg md:text-xl font-medium">
-              Venez visiter le campus de <strong>Martigues</strong> et découvrez
-              nos formations !
+            <p className="text-xs md:text-sm font-medium mt-1">
+              Venez découvrir nos formations à <strong>Martigues</strong> !
             </p>
-
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-200 shadow-md">
-              S'inscrire
-            </button>
           </div>
+
+          <Button 
+            to="/jpo:id" 
+            label="Voir les détails" 
+            className="" 
+          />
+
         </div>
       </div>
     </div>
