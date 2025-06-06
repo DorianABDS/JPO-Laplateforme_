@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
 export default function Button({
-  to = "/events",
-  label = "S'inscrire",
+  to = "/",
+  label = "Voir les details",
   className = ""
 }) {
   const navigate = useNavigate();
 
-  const baseClass = "text-md bg-white text-[#0062F0] px-5 py-2 rounded-full hover:bg-[#d6d6d6] sm:text-2xl font-semibold text-white h-14 sm:h-14 w-full sm:w-52 rounded-full transition"
+  const baseClass = "mt-4 bg-white text-[#0062FF] px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-200 shadow self-start"
 
   return (
     <button onClick={() => navigate(to)} className={`${baseClass} ${className}`}>
