@@ -1,59 +1,42 @@
 import { Link } from "react-router-dom";
-import logoLaplateforme from "../assets/img/Logo_Plateforme_blanc.svg";
+import { Instagram, Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0062FF] shadow-md py-8 px-6 md:px-20">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
-        <Link to="/" className="flex justify-center md:justify-start w-full md:w-auto">
-          <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-20 md:h-32" />
-        </Link>
+    <footer className="bg-[#0062FF] text-white rounded p-10 flex flex-col items-center gap-8">
+      
+      {/* Menu liens */}
+      <nav className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 text-center">
+        <Link to="/" className="link hover:text-gray-300">Accueil</Link>
+        <Link to="/profil" className="link hover:text-gray-300">Profil</Link>
+        <Link to="/evenements" className="link hover:text-gray-300">Événement</Link>
+        <Link to="/inscription" className="link hover:text-gray-300">Inscription</Link>
+        <Link to="/connexion" className="link hover:text-gray-300">Connexion</Link>
+      </nav>
 
-        <nav className="w-full md:w-auto">
-          <ul className="flex flex-col md:flex-row md:gap-8 items-center text-center md:text-left">
-            <li>
-              <Link
-                to=""
-                className="font-Poppins font-semibold text-lg text-white hover:text-[#353535] block py-2 md:py-0">
-                Accueil
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/profile"
-                className="font-Poppins font-semibold text-lg text-white hover:text-[#353535] block py-2 md:py-0">
-                Profil
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/evenements"
-                className="font-Poppins font-semibold text-lg text-white hover:text-[#353535] block py-2 md:py-0">
-                Événements
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/inscription"
-                className="font-Poppins font-semibold text-lg text-white hover:text-[#353535] block py-2 md:py-0">
-                Inscription
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/login"
-                className="font-Poppins font-semibold text-lg text-white hover:text-[#353535] block py-2 md:py-0">
-                Connexion
-              </Link>
-            </li>
-          </ul>
-        </nav>
+      {/* Réseaux sociaux */}
+      <div className="flex gap-6 justify-center flex-wrap">
+        <a href="https://www.facebook.com/LaPlateformeIO" aria-label="Facebook" className="hover:text-gray-300">
+          <Facebook />
+        </a>
+        <a href="https://www.instagram.com/LaPlateformeIO/" aria-label="Instagram" className="hover:text-gray-300">
+          <Instagram />
+        </a>
+        <a href="https://www.linkedin.com/school/laplateformeio/" aria-label="Linkedin" className="hover:text-gray-300">
+          <Linkedin />
+        </a>
+        <a href="https://www.linkedin.com/school/laplateformeio/" aria-label="Twitter" className="hover:text-gray-300">
+          <Twitter />
+        </a>
+        <a href="https://www.youtube.com/c/LaPlateformeIO" aria-label="Youtube" className="hover:text-gray-300">
+          <Youtube />
+        </a>
       </div>
 
-      {/* Copyright centré en dessous */}
-      <p className="mt-6 text-center text-gray-300 text-sm font-Poppins">
-        © {new Date().getFullYear()} LaPlateforme. Tous droits réservés.
-      </p>
+      {/* Copyright */}
+      <aside className="text-center text-sm text-gray-200">
+        <p>© {new Date().getFullYear()} - Tous droits réservés · Web Workers</p>
+      </aside>
     </footer>
   );
 }
