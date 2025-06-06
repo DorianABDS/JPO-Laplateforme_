@@ -1,6 +1,4 @@
-// src/services/api.js
-// Service API centralisé - Version Production
-
+import PropTypes from 'prop-types';
 import { API_CONFIG, buildUrl, log } from './apiConfig.js';
 
 // === CLASSE D'ERREUR PERSONNALISÉE ===
@@ -252,4 +250,42 @@ export default {
   
   // Classes/Types
   ApiError,
+};
+
+// Props pour les fonctions API
+apiRequest.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.shape({
+    method: PropTypes.string,
+    headers: PropTypes.object,
+    body: PropTypes.string,
+    signal: PropTypes.object
+  })
+};
+
+getJpoList.propTypes = {
+  params: PropTypes.object
+};
+
+getJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
+createJpo.propTypes = {
+  jpoData: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    date: PropTypes.string,
+    location: PropTypes.string,
+    capacity: PropTypes.number
+  }).isRequired
+};
+
+updateJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  jpoData: PropTypes.object.isRequired
+};
+
+deleteJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
