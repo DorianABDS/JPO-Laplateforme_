@@ -56,6 +56,11 @@ export const buildUrl = (endpoint) => {
   return `${baseUrl}${cleanEndpoint}`;
 };
 
+// PropTypes pour buildUrl
+buildUrl.propTypes = {
+  endpoint: PropTypes.string.isRequired
+};
+
 // Fonction pour logger uniquement en développement
 export const log = (level, message, data = null) => {
   if (!API_CONFIG.ENABLE_LOGS) return;
@@ -78,11 +83,7 @@ export const log = (level, message, data = null) => {
   }
 };
 
-// Props pour les fonctions utilitaires
-buildUrl.propTypes = {
-  endpoint: PropTypes.string.isRequired
-};
-
+// PropTypes pour log
 log.propTypes = {
   level: PropTypes.oneOf(['error', 'warn', 'info', 'debug']).isRequired,
   message: PropTypes.string.isRequired,
