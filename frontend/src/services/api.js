@@ -125,6 +125,12 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
+// PropTypes pour apiRequest
+apiRequest.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.object
+};
+
 // === FONCTIONS API PUBLIQUES ===
 
 /**
@@ -149,6 +155,11 @@ export const getJpoList = async (params = {}) => {
   return await apiRequest(endpoint);
 };
 
+// PropTypes pour getJpoList
+getJpoList.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Récupère les détails d'une JPO par son ID
  * @param {string|number} id - ID de la JPO
@@ -162,6 +173,11 @@ export const getJpoById = async (id) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO_BY_ID(id));
 };
 
+// PropTypes pour getJpoById
+getJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
 /**
  * Crée une nouvelle JPO (pour plus tard)
  * @param {Object} jpoData - Données de la JPO
@@ -172,6 +188,11 @@ export const createJpo = async (jpoData) => {
     method: 'POST',
     body: JSON.stringify(jpoData),
   });
+};
+
+// PropTypes pour createJpo
+createJpo.propTypes = {
+  jpoData: PropTypes.object.isRequired
 };
 
 /**
@@ -191,6 +212,12 @@ export const updateJpo = async (id, jpoData) => {
   });
 };
 
+// PropTypes pour updateJpo
+updateJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  jpoData: PropTypes.object.isRequired
+};
+
 /**
  * Supprime une JPO (pour plus tard)
  * @param {string|number} id - ID de la JPO
@@ -206,6 +233,11 @@ export const deleteJpo = async (id) => {
   });
   
   return true;
+};
+
+// PropTypes pour deleteJpo
+deleteJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 // === FONCTIONS UTILITAIRES ===

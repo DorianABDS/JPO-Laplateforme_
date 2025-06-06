@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { apiRequest } from './api.js';
 import { API_CONFIG, log } from './apiConfig.js';
 
@@ -108,6 +109,11 @@ export class DatabaseDetails {
   }
 }
 
+// PropTypes pour DatabaseDetails
+DatabaseDetails.propTypes = {
+  data: PropTypes.object
+};
+
 // === FONCTIONS PRINCIPALES ===
 
 /**
@@ -173,6 +179,12 @@ export const getDatabaseDetails = async (forceRefresh = false, options = {}) => 
   }
 };
 
+// PropTypes pour getDatabaseDetails
+getDatabaseDetails.propTypes = {
+  forceRefresh: PropTypes.bool,
+  options: PropTypes.object
+};
+
 /**
  * Récupère uniquement les informations de base
  * @returns {Promise<Object>} Informations de base
@@ -190,6 +202,11 @@ export const getDatabaseBasicInfo = async () => {
 export const getDatabaseTables = async (searchTerm = null) => {
   const details = await getDatabaseDetails();
   return searchTerm ? details.searchTables(searchTerm) : details.getTables();
+};
+
+// PropTypes pour getDatabaseTables
+getDatabaseTables.propTypes = {
+  searchTerm: PropTypes.string
 };
 
 /**
@@ -217,6 +234,11 @@ export const getTableDetails = async (tableName) => {
   }
 };
 
+// PropTypes pour getTableDetails
+getTableDetails.propTypes = {
+  tableName: PropTypes.string.isRequired
+};
+
 /**
  * Récupère les statistiques de la base
  * @returns {Promise<Object>} Statistiques
@@ -236,6 +258,11 @@ export const tableExists = async (tableName) => {
   return details.hasTable(tableName);
 };
 
+// PropTypes pour tableExists
+tableExists.propTypes = {
+  tableName: PropTypes.string.isRequired
+};
+
 /**
  * Récupère le schéma d'une table depuis l'API PHP
  * @param {string} tableName - Nom de la table
@@ -244,6 +271,11 @@ export const tableExists = async (tableName) => {
 export const getTableSchema = async (tableName) => {
   const tableDetails = await getTableDetails(tableName);
   return tableDetails.columns || [];
+};
+
+// PropTypes pour getTableSchema
+getTableSchema.propTypes = {
+  tableName: PropTypes.string.isRequired
 };
 
 /**
@@ -305,6 +337,11 @@ export const getTableConstraints = async (tableName) => {
   };
 };
 
+// PropTypes pour getTableConstraints
+getTableConstraints.propTypes = {
+  tableName: PropTypes.string.isRequired
+};
+
 // === FONCTIONS UTILITAIRES ===
 
 /**
@@ -345,6 +382,11 @@ export const configureCacheDuration = (durationMs) => {
     CACHE_DURATION = durationMs;
     log('info', `Cache duration set to ${durationMs}ms`);
   }
+};
+
+// PropTypes pour configureCacheDuration
+configureCacheDuration.propTypes = {
+  durationMs: PropTypes.number.isRequired
 };
 
 // === EXPORT PAR DÉFAUT ===
