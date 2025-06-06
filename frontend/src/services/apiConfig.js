@@ -1,5 +1,3 @@
-// src/services/apiConfig.js
-// Configuration centralisée de l'API - Mise à jour pour Database Service
 import PropTypes from 'prop-types';
 
 export const API_CONFIG = {
