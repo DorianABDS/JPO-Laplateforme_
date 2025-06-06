@@ -30,7 +30,7 @@ export default function Header() {
           Événements
         </Link>
         <Link
-          to="/adminboard"
+          to="/admindashboard"
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
           Admin
         </Link>
