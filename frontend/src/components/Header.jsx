@@ -7,7 +7,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 relative">
+    <nav className="bg-white shadow-md w-screen py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 fixed">
       <Link to="/">
         <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-24 p-0" />
       </Link>
@@ -20,12 +20,12 @@ export default function Header() {
           Accueil
         </Link>
         <Link
-          to="/profile"
+          to="/profil"
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
           Profil
         </Link>
         <Link
-          to="/events"
+          to="/evenements"
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]">
           Événements
         </Link>
@@ -42,7 +42,7 @@ export default function Header() {
         </Link>
 
         <Link
-          to="/login"
+          to="/connexion"
           className="font-Poppins font-semibold text-md border border-[#0062FF] text-[#0062FF] px-5 py-2 rounded-full hover:bg-[#0062FF] hover:text-white transition-colors">
           Connexion
         </Link>
