@@ -31,7 +31,8 @@ export class ApiError extends Error {
 }
 
 // === FONCTION PRINCIPALE POUR LES APPELS API ===
-const apiRequest = async (endpoint, options = {}) => {
+// ✅ MAINTENANT EXPORTÉE
+export const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
   
@@ -124,6 +125,12 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
+// PropTypes pour apiRequest
+apiRequest.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.object
+};
+
 // === FONCTIONS API PUBLIQUES ===
 
 /**
@@ -148,6 +155,11 @@ export const getJpoList = async (params = {}) => {
   return await apiRequest(endpoint);
 };
 
+// PropTypes pour getJpoList
+getJpoList.propTypes = {
+  params: PropTypes.object
+};
+
 /**
  * Récupère les détails d'une JPO par son ID
  * @param {string|number} id - ID de la JPO
@@ -161,6 +173,11 @@ export const getJpoById = async (id) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO_BY_ID(id));
 };
 
+// PropTypes pour getJpoById
+getJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
 /**
  * Crée une nouvelle JPO (pour plus tard)
  * @param {Object} jpoData - Données de la JPO
@@ -171,6 +188,11 @@ export const createJpo = async (jpoData) => {
     method: 'POST',
     body: JSON.stringify(jpoData),
   });
+};
+
+// PropTypes pour createJpo
+createJpo.propTypes = {
+  jpoData: PropTypes.object.isRequired
 };
 
 /**
@@ -190,6 +212,12 @@ export const updateJpo = async (id, jpoData) => {
   });
 };
 
+// PropTypes pour updateJpo
+updateJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  jpoData: PropTypes.object.isRequired
+};
+
 /**
  * Supprime une JPO (pour plus tard)
  * @param {string|number} id - ID de la JPO
@@ -205,6 +233,11 @@ export const deleteJpo = async (id) => {
   });
   
   return true;
+};
+
+// PropTypes pour deleteJpo
+deleteJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 // === FONCTIONS UTILITAIRES ===
@@ -250,42 +283,7 @@ export default {
   
   // Classes/Types
   ApiError,
-};
-
-// Props pour les fonctions API
-apiRequest.propTypes = {
-  endpoint: PropTypes.string.isRequired,
-  options: PropTypes.shape({
-    method: PropTypes.string,
-    headers: PropTypes.object,
-    body: PropTypes.string,
-    signal: PropTypes.object
-  })
-};
-
-getJpoList.propTypes = {
-  params: PropTypes.object
-};
-
-getJpoById.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-};
-
-createJpo.propTypes = {
-  jpoData: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    date: PropTypes.string,
-    location: PropTypes.string,
-    capacity: PropTypes.number
-  }).isRequired
-};
-
-updateJpo.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  jpoData: PropTypes.object.isRequired
-};
-
-deleteJpo.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+  
+  // ✅ AJOUT DE apiRequest dans l'export par défaut
+  apiRequest,
 };

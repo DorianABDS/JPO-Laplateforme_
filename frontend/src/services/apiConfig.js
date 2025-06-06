@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export const API_CONFIG = {
   // URL de base de l'API (depuis les variables d'environnement)
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
@@ -16,9 +18,23 @@ export const API_CONFIG = {
   
   // Endpoints de l'API
   ENDPOINTS: {
+    // Endpoints existants
     PING: '/api/ping',
     JPO: '/api/jpo',
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
+    
+    // Nouveaux endpoints pour la base de données
+    DATABASE_INFO: '/api/database/info',
+    DATABASE_TABLE: (tableName) => `/api/database/table?table=${tableName}`,
+    DATABASE_SCHEMA: '/api/database/schema',
+    DATABASE_RELATIONS: '/api/database/relations',
+    
+    // Endpoints pour les utilisateurs
+    USER_GET: (id) => `/api/user/get?id=${id}`,
+    USER_UPDATE: (id) => `/api/user/update?id=${id}`,
+    USER_CREATE: '/api/user/create',
+    USER_DELETE: (id) => `/api/user/delete?id=${id}`,
+    USER_LIST: '/api/user/list',
   },
   
   // Messages d'erreur personnalisés
@@ -30,6 +46,10 @@ export const API_CONFIG = {
     FORBIDDEN: 'Accès interdit',
     TIMEOUT: 'Délai d\'attente dépassé',
     UNKNOWN: 'Une erreur inattendue s\'est produite',
+    DATABASE_ERROR: 'Erreur lors de l\'accès à la base de données',
+    TABLE_NOT_FOUND: 'Table non trouvée dans la base de données',
+    USER_NOT_FOUND: 'Utilisateur non trouvé',
+    VALIDATION_ERROR: 'Données invalides',
   },
   
   // Activer/désactiver les logs selon l'environnement
@@ -47,6 +67,11 @@ export const buildUrl = (endpoint) => {
     : `/${endpoint}`;
     
   return `${baseUrl}${cleanEndpoint}`;
+};
+
+// PropTypes pour buildUrl
+buildUrl.propTypes = {
+  endpoint: PropTypes.string.isRequired
 };
 
 // Fonction pour logger uniquement en développement
@@ -71,11 +96,7 @@ export const log = (level, message, data = null) => {
   }
 };
 
-// Props pour les fonctions utilitaires
-buildUrl.propTypes = {
-  endpoint: PropTypes.string.isRequired
-};
-
+// PropTypes pour log
 log.propTypes = {
   level: PropTypes.oneOf(['error', 'warn', 'info', 'debug']).isRequired,
   message: PropTypes.string.isRequired,
