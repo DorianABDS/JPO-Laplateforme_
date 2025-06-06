@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CardJPO from "../components/CardJPO";
 import HeroImg from "../assets/img/bg-hero5.jpg";
 import Button from "../components/Button";
+import ButtonHero from "../components/ButtonHero";
 
 export default function Home() {
   const [jpos, setJpos] = useState([]);
@@ -31,9 +32,12 @@ export default function Home() {
         <p className="max-w-2xl text-base sm:text-lg md:text-xl font-Poppins mb-6">
           Découvrez nos campus grâce à nos journée porte ouverte, rencontrez nos enseignants et explorez nos formations.
         </p>
-        <Button />
+        <ButtonHero
+          label="Découvrir"
+          to="/events"
+          className=""
+        />
       </section>
-
 
       {/* Liste des JPO */}
       <section className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
