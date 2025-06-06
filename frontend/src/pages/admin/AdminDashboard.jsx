@@ -1,4 +1,5 @@
 import Breadcrumbs from '../../components/Breadcrumbs.jsx'
+import CardJPO from '../../components/CardJPO.jsx'
 
 export default function AdminDashboard() {
   return (
