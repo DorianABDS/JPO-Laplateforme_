@@ -33,7 +33,8 @@ export class ApiError extends Error {
 }
 
 // === FONCTION PRINCIPALE POUR LES APPELS API ===
-const apiRequest = async (endpoint, options = {}) => {
+// ✅ MAINTENANT EXPORTÉE
+export const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
   
@@ -252,4 +253,7 @@ export default {
   
   // Classes/Types
   ApiError,
+  
+  // ✅ AJOUT DE apiRequest dans l'export par défaut
+  apiRequest,
 };
