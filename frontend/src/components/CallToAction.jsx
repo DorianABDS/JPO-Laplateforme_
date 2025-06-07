@@ -8,7 +8,7 @@ export function CallToAction() {
           Envie d’en voir plus ? Nos prochains événements n’attendent que vous.</p>
         <HeroButton
           to="/events"
-          className="bg-white text-[#0062FD] hover:bg-gray-300 !w-72" 
+          className="bg-white !text-[#0062FD] hover:bg-gray-300 !w-72" 
         />
       </div>
     </div>
