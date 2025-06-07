@@ -9,6 +9,7 @@ export function CallToAction() {
           Envie d’en voir plus ? Nos prochains événements n’attendent que vous.</p>
         <Button
           to="/events"
+          label = "Explorer nos JPO"
           className="text-lg sm:text-2xl font-semibold h-14 md:!w-72" 
         />
       </div>
