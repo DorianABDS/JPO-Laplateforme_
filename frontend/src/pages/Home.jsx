@@ -4,6 +4,7 @@ import HeroImg from "../assets/img/bg-hero5.jpg";
 import { HeroButton } from "../components/HeroButton";
 import { CallToAction } from "../components/CallToAction";
 
+// Page d'accueil affichant une bannière, des JPO à venir et un appel à l'action
 export function Home() {
   const [jpos, setJpos] = useState([]);
 
@@ -20,7 +21,7 @@ export function Home() {
 
   return (
     <div>
-      {/* Hero */}
+      {/* Section hero*/}
       <section
         className="bg-cover bg-center px-4 sm:px-8 md:px-20 flex flex-col justify-center text-white z-30"
         style={{
@@ -38,8 +39,9 @@ export function Home() {
         <HeroButton label="Découvrir" to="/events" className="" />
       </section>
 
+      {/* JPO*/}
       <section>
-        <p className="font-trench text-4xl font-bold text-[#0062FF] mt-20 mb-20 flex justify-center sm: md: text-center text-1xl px-4">
+        <p className="font-trench text-4xl font-bold text-[#0062FF] mt-20 mb-20 flex justify-center text-center px-4">
           Journée porte ouverte à venir
         </p>
         <CardJPO
@@ -79,12 +81,14 @@ export function Home() {
 
       <CallToAction />
 
-      {/* Liste des JPO
+      {/* Section d'affichage dynamique de toutes les JPO */}
+      {/*
       <section className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {jpos.map((open_day) => (
           <CardJPO key={open_day.id} jpo={open_day} />
         ))}
-      </section> */}
+      </section>
+      */}
     </div>
   );
 }

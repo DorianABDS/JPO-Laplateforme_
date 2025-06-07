@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { useEffect } from "react";
 
+// Définition des titres de page en fonction du chemin
 const titlesByPath = {
   "/": "Accueil - JPO-Laplateforme_",
   "/profil": "Profil - JPO-Laplateforme_",
@@ -14,9 +15,11 @@ const titlesByPath = {
   "/admindashboard/jpo": "Admin - JPO - JPO-Laplateforme_",
 };
 
+// Layout principal utilisateur
 export function AppLayout() {
   const location = useLocation();
 
+  // Mise à jour du titre de la page lors du changement de route
   useEffect(() => {
     const title = titlesByPath[location.pathname] || "JPO-Laplateforme_";
     document.title = title;
@@ -28,6 +31,7 @@ export function AppLayout() {
         <Header />
       </header>
 
+      {/* Contenu de la page */}
       <main className="bg-white mt-[64px] flex-1 overflow-auto">
         <Outlet />
       </main>

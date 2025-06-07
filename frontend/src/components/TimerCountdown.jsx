@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+// Composant compteur à rebours jusqu'à une date cible
 export function CountdownTimer({ targetDate }) {
+  // Calcule le temps restant (jours, heures, minutes)
   const calculateTimeLeft = () => {
     const difference = +new Date(targetDate) - +new Date();
-    if (difference <= 0) return null;
+    if (difference <= 0) return null; // date passée
 
     return {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -14,14 +16,16 @@ export function CountdownTimer({ targetDate }) {
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
+  // Met à jour le compteur toutes les secondes
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timer); // nettoyage à la suppression du composant
   }, [targetDate]);
 
+  // Affiche message si date dépassée
   if (!timeLeft) {
     return (
       <div className="text-red-500 text-xl font-semibold">
@@ -30,6 +34,7 @@ export function CountdownTimer({ targetDate }) {
     );
   }
 
+  // Affiche le temps restant formaté
   return (
     <div className="text-white text-xl font-semibold flex flex-row gap-2 items-center">
       <div>

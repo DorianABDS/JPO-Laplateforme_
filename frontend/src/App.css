@@ -1,8 +1,10 @@
+/* Tailwind + DaisyUI */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @plugin "daisyui";
 
+/* Variables globales */
 :root {
   font-family: 'Poppins', sans-serif;
   line-height: 1.5;
@@ -18,23 +20,25 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Layout global */
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE 10+ */
 }
 
-/* Chrome, Safari et Opera */
+/* Masque la scrollbar (Chrome, Safari, Opera) */
 body::-webkit-scrollbar {
   width: 0;
   height: 0;
   background: transparent;
 }
 
+/* Fonts custom */
 @font-face {
   font-family: 'TrenchSlab';
   src: url('./assets/fonts/TrenchSlab-Bold.otf') format('opentype');

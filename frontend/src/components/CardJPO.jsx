@@ -2,9 +2,10 @@ import React from "react";
 import { CountdownTimer } from "./TimerCountdown";
 import { Button } from "./Button";
 import { Calendar, Users, MapPin, Clock } from "lucide-react";
-import { Flex, Progress } from 'antd';
+import { Progress } from "antd";
 
 export function CardJPO({ jpo, occupationPercentage = 0 }) {
+  // Création d'une Date combinée avec heure optionnelle
   const createDateTime = (dateStr, timeStr) => {
     const date = new Date(dateStr);
     if (!timeStr) return date;
@@ -13,7 +14,7 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
     return date;
   };
 
-  const openingHour = "14:00";
+  const openingHour = "09:00";
   const targetDateWithTime = createDateTime(jpo.date, openingHour);
   const maxCapacity = jpo.max_capacity || 1;
   const currentRegistrations = Math.round((occupationPercentage / 100) * maxCapacity);
@@ -47,10 +48,11 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
     <div className="md:w-[60%] w-[90%] mx-auto mb-10 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 relative z-0">
       <div className="flex flex-col md:flex-row">
 
+        {/* Image JPO + Indicateurs d'occupation */}
         <div className="md:w-1/2 h-48 md:h-auto relative">
           <img
             src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-            alt="Campus universitaire"
+            alt={`Campus universitaire pour JPO ${jpo.name}`}
             className="w-full h-full object-cover"
           />
 
@@ -74,6 +76,7 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
           </div>
         </div>
 
+        {/* Contenu principal */}
         <div className="lg:w-3/5 bg-gradient-to-br from-[#0062FF] via-[#0052CC] to-[#0041AA] text-white p-4 flex flex-col justify-between relative overflow-hidden">
           <div className="space-y-2">
             <div>
@@ -113,6 +116,7 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
               </div>
             </div>
 
+            {/* Infos date, heure, campus */}
             <div className="flex flex-col md:flex-row items-start md:items-center gap-1 mt-2 flex-wrap">
               <div className="flex items-center justify-between gap-3 sm:w-full w-full md:w-auto">
                 <div className="flex items-center gap-2 bg-white/5 rounded-lg p-2 border border-white/10 flex-1">
@@ -137,7 +141,7 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
                 </div>
                 <div>
                   <p className="text-xs text-white/70">Ouverture</p>
-                  <p className="font-bold text-xs">9h00</p>
+                  <p className="font-bold text-xs">{openingHour.replace(':', 'h')}</p>
                 </div>
               </div>
 
@@ -152,11 +156,14 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
               </div>
             </div>
           </div>
+
+          {/* Bouton détails */}
           <div className="flex justify-center md:justify-end">            
             <Button 
-              to="/jpo:id" 
+              to={`/jpo:id`} 
               label="Voir les détails" 
               className="w-full md:w-auto"
+              aria-label={`Voir les détails de la JPO ${jpo.name}`}
             />
           </div>
         </div>

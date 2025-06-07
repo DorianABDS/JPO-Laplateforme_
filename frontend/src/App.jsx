@@ -1,22 +1,31 @@
-import { RouterProvider } from "react-router-dom";
-import { createBrowserRouter } from "react-router-dom";
-import { AppLayout } from "./layouts/AppLayout.jsx";
-import { Home } from "./pages/Home.jsx";
-import { Profile } from "./pages/Profile.jsx";
-import { Events } from "./pages/Events.jsx";
-import { AdminLayout } from "./layouts/AdminLayout.jsx";
-import { AdminDashboard } from "./pages/admin/AdminDashboard.jsx";
-import { AdminUsers } from "./pages/admin/AdminUsers.jsx";
-import { AdminJPO } from "./pages/admin/AdminJPO.jsx";
-import { Login } from "./pages/Login.jsx";
-import { Register } from "./pages/Register.jsx";
-import { NotFound } from "./pages/NotFound.jsx";
+// React Router
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+// Contexte et composants de transition
 import { TransitionProvider } from './context/TransitionContext.jsx';
 import TransitionComponent from "./components/Transition.jsx";
 
+// Layouts
+import { AppLayout } from "./layouts/AppLayout.jsx";
+import { AdminLayout } from "./layouts/AdminLayout.jsx";
+
+// Pages utilisateurs
+import { Home } from "./pages/Home.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import { Events } from "./pages/Events.jsx";
+import { Login } from "./pages/Login.jsx";
+import { Register } from "./pages/Register.jsx";
+import { NotFound } from "./pages/NotFound.jsx";
+
+// Pages admin
+import { AdminDashboard } from "./pages/admin/AdminDashboard.jsx";
+import { AdminUsers } from "./pages/admin/AdminUsers.jsx";
+import { AdminJPO } from "./pages/admin/AdminJPO.jsx";
+
+// Configuration des routes principales
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/", // Routes publiques
     element: <AppLayout />,
     children: [
       { path: "", element: <TransitionComponent><Home /></TransitionComponent> },
@@ -24,11 +33,11 @@ const router = createBrowserRouter([
       { path: "evenement", element: <TransitionComponent><Events /></TransitionComponent> },
       { path: "connexion", element: <TransitionComponent><Login /></TransitionComponent> },
       { path: "inscription", element: <TransitionComponent><Register /></TransitionComponent> },
-      { path: "*", element: <TransitionComponent><NotFound /></TransitionComponent> },
+      { path: "*", element: <TransitionComponent><NotFound /></TransitionComponent> }, // error 404
     ],
   },
   {
-    path: "/admindashboard",
+    path: "/admindashboard", // Routes accessibles aux administrateurs
     element: <AdminLayout />,
     children: [
       { index: true, element: <TransitionComponent><AdminDashboard /></TransitionComponent> },
@@ -38,6 +47,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+// App principale avec Provider pour le contexte de transition
 export function App() {
   return (
     <TransitionProvider>
