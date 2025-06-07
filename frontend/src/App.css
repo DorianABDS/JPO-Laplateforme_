@@ -23,6 +23,16 @@ html, body, #root {
   padding: 0;
   height: 100%;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-y: scroll;
+}
+
+/* Chrome, Safari et Opera */
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 @font-face {
