@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { getJpoList, getJpoById, checkApiHealth, ApiError } from './api.js';
 
-// === HOOK GÉNÉRIQUE POUR LES REQUÊTES API ===
 const useApiRequest = (apiFunction, initialData = null) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
@@ -64,7 +63,6 @@ const useApiRequest = (apiFunction, initialData = null) => {
   };
 };
 
-// === HOOK POUR LA LISTE DES JPO ===
 export const useJpoList = (autoLoad = true, params = {}) => {
   const {
     data: jpos,
@@ -74,17 +72,20 @@ export const useJpoList = (autoLoad = true, params = {}) => {
     reset
   } = useApiRequest(getJpoList, []);
 
+  // Mémoriser les paramètres pour éviter les re-rendus inutiles
+  const memoizedParams = useMemo(() => params, [JSON.stringify(params)]);
+
   // Chargement automatique au montage
   useEffect(() => {
     if (autoLoad) {
-      execute(params);
+      execute(memoizedParams);
     }
-  }, [autoLoad, execute, JSON.stringify(params)]);
+  }, [autoLoad, execute, memoizedParams]);
 
   // Fonction pour recharger les données
-  const reload = useCallback((newParams = params) => {
+  const reload = useCallback((newParams = memoizedParams) => {
     return execute(newParams);
-  }, [execute, params]);
+  }, [execute, memoizedParams]);
 
   return {
     jpos,
@@ -95,7 +96,6 @@ export const useJpoList = (autoLoad = true, params = {}) => {
   };
 };
 
-// === HOOK POUR UNE JPO SPÉCIFIQUE ===
 export const useJpoById = (id, autoLoad = true) => {
   const {
     data: jpo,
@@ -129,7 +129,6 @@ export const useJpoById = (id, autoLoad = true) => {
   };
 };
 
-// === HOOK POUR LE STATUT DE L'API ===
 export const useApiHealth = (checkInterval = 30000) => {
   const [isHealthy, setIsHealthy] = useState(null);
   const [lastCheck, setLastCheck] = useState(null);
@@ -154,10 +153,8 @@ export const useApiHealth = (checkInterval = 30000) => {
 
   // Configuration de la vérification périodique
   useEffect(() => {
-    // Première vérification
     checkHealth();
 
-    // Vérifications périodiques
     if (checkInterval > 0) {
       intervalRef.current = setInterval(checkHealth, checkInterval);
     }

@@ -1,11 +1,13 @@
+import PropTypes from 'prop-types';
+
 export const API_CONFIG = {
-  // URL de base de l'API (depuis les variables d'environnement)
+  // URL de base de l'API
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
   
   // Environnement actuel
   ENVIRONMENT: import.meta.env.VITE_APP_ENV || 'development',
   
-  // Timeout pour les requêtes (en millisecondes)
+  // Timeout pour les requêtes
   TIMEOUT: 30000, // 30 secondes
   
   // Headers par défaut
@@ -21,7 +23,7 @@ export const API_CONFIG = {
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
   },
   
-  // Messages d'erreur personnalisés
+  // Messages d'erreur
   ERROR_MESSAGES: {
     NETWORK: 'Problème de connexion réseau',
     SERVER: 'Erreur du serveur, veuillez réessayer',
