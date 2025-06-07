@@ -29,7 +29,7 @@ export function Header() {
           Profil
         </Link>
         <Link
-          to="/evenements"
+          to="/events"
           className="font-Poppins font-semibold text-md text-[#0062FF] hover:text-[#353535]"
         >
           Événements
