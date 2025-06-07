@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function HeroButton({
+export function HeroButton({
   to = "/events",
   label = "Explorer nos JPO",
   className = ""

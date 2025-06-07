@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
 import { useEffect } from "react";
 
 const titlesByPath = {
@@ -14,7 +14,7 @@ const titlesByPath = {
   "/admindashboard/jpo": "Admin - JPO - JPO-Laplateforme_",
 };
 
-export default function AppLayout() {
+export function AppLayout() {
   const location = useLocation();
 
   useEffect(() => {

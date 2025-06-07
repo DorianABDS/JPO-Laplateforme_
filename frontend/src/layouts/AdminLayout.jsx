@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { House, User, DoorOpen, CornerDownLeft } from "lucide-react";
 
-export default function AdminLayout() {
+export function AdminLayout() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}

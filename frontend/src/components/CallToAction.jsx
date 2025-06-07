@@ -1,4 +1,4 @@
-import HeroButton from "./HeroButton";
+import { HeroButton } from "./HeroButton";
 
 export function CallToAction() {
   return (

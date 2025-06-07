@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-[#0062FF] text-white rounded p-10 flex flex-col items-center gap-8">
       

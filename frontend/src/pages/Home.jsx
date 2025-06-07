@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CardJPO } from "../components/CardJPO";
 import HeroImg from "../assets/img/bg-hero5.jpg";
-import HeroButton from "../components/HeroButton";
+import { HeroButton } from "../components/HeroButton";
 import { CallToAction } from "../components/CallToAction";
 
 export function Home() {

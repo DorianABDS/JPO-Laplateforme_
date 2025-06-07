@@ -1,4 +1,4 @@
-export default function NotFound() {
+export function NotFound() {
   return (
     <div className="p-8 text-center">
       <h1 className="text-3xl font-bold text-red-500">404 - Page non trouvée</h1>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function CountdownTimer({ targetDate }) {
+export function CountdownTimer({ targetDate }) {
   const calculateTimeLeft = () => {
     const difference = +new Date(targetDate) - +new Date();
     if (difference <= 0) return null;

@@ -1,15 +1,15 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import AppLayout from "./layouts/AppLayout";
-import { Home } from "./pages/Home";
-import { Profile } from "./pages/Profile";
-import Events from "./pages/Events";
-import AdminLayout from "./layouts/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminJPO from "./pages/admin/AdminJPO";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
+import { AppLayout } from "./layouts/AppLayout.jsx";
+import { Home } from "./pages/Home.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import { Events } from "./pages/Events.jsx";
+import { AdminLayout } from "./layouts/AdminLayout.jsx";
+import { AdminDashboard } from "./pages/admin/AdminDashboard.jsx";
+import { AdminUsers } from "./pages/admin/AdminUsers.jsx";
+import { AdminJPO } from "./pages/admin/AdminJPO.jsx";
+import { Login } from "./pages/Login.jsx";
+import { Register } from "./pages/Register.jsx";
+import { NotFound } from "./pages/NotFound.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +37,6 @@ const router = createBrowserRouter([
 ]);
 
 
-export default function App() {
+export function App() {
   return <RouterProvider router={router} />;
 }

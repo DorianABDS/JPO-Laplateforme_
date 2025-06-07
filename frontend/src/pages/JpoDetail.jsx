@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CardJPO from "../components/CardJPO";
+import { CardJPO } from "../components/CardJPO";
 
-export default function JpoDetail() {
+export function JpoDetail() {
   const { id } = useParams();
   const [jpo, setJpo] = useState(null);
 

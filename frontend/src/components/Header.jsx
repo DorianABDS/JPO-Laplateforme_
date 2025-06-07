@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react"; 
 import logoLaplateforme from "../assets/img/Logo_Plateforme_bleu.svg";
 
-export default function Header() {
+export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
