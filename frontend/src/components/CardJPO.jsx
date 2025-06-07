@@ -1,6 +1,6 @@
 import React from "react";
 import CountdownTimer from "./TimerCountdown";
-import Button from "./Button";
+import { Button } from "./Button";
 import { Calendar, Users, MapPin, Clock } from "lucide-react";
 import { Flex, Progress } from 'antd';
 
