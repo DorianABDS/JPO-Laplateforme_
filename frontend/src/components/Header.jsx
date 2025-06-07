@@ -7,7 +7,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md w-screen py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 fixed">
+    <nav className="bg-white shadow-md w-screen py-4 px-6 md:px-20 flex justify-between items-center h-16 shrink-0 fixed z-50">
       <Link to="/">
         <img src={logoLaplateforme} alt="Logo La Plateforme" className="h-24 p-0" />
       </Link>
