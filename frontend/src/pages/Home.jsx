@@ -39,7 +39,7 @@ export function Home() {
       </section>
 
       <section>
-        <p className="font-trench text-4xl font-bold text-[#0062FF] mt-20 mb-20 flex justify-center">
+        <p className="font-trench text-4xl font-bold text-[#0062FF] mt-20 mb-20 flex justify-center sm: md: text-center text-1xl px-4">
           Journée porte ouverte à venir
         </p>
         <CardJPO
