@@ -1,3 +1,39 @@
+# Configuration pour l'API JPO La Plateforme - Version WAMP
+
+# Activer le module de réécriture
+RewriteEngine On
+
+# Rediriger tout le trafic vers public/index.php si le fichier/dossier n'existe pas
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php [QSA,L]
+
+# Répondre aux requêtes OPTIONS (preflight)
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ public/index.php [QSA,L]
+
+# Sécurité : Empêcher l'accès aux fichiers sensibles
 <Files ".env">
-Require all denied
+    Require all denied
 </Files>
+
+<Files "composer.json">
+    Require all denied
+</Files>
+
+<Files "composer.lock">
+    Require all denied
+</Files>
+
+# Empêcher l'accès au dossier vendor
+<IfModule mod_rewrite.c>
+    RewriteRule ^vendor/.*$ - [F,L]
+</IfModule>
+
+# Configuration PHP
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 30
+    php_value memory_limit 128M
+</IfModule>
