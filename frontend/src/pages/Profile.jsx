@@ -33,7 +33,8 @@ export function Profile() {
       {/* Formulaire d'édition du profil utilisateur */}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col flex-grow justify-center items-center p-10 rounded-lg bg-[#0062FF] gap-6 max-w-md w-full mx-4 shadow-lg"
+        className="flex flex-col flex-grow justify-center items-center p-10 rounded-lg bg-gradient-to-br 
+                    from-[#0062FF] via-[#0052CC] to-[#0041AA]  gap-6 max-w-md w-full mx-4 shadow-lg"
       >
         <Input
           name="firstname"

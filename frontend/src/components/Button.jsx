@@ -10,8 +10,7 @@ export function Button({
   const navigate = useNavigate();
 
   // Classes CSS de base
-  const baseClass =
-    "mt-4 bg-white text-[#0062FF] hover:bg-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-200 shadow self-start";
+  const baseClass = "mt-4 bg-white text-[#0062FF] px-6 py-2 rounded-full font-semibold shadow transition duration-300 ease-in-out hover:bg-gradient-to-br hover:from-[#0062FF] hover:via-[#0052CC] hover:to-[#0041AA] hover:text-white hover:shadow-lg hover:-translate-y-1";
 
   // Gestion du clic
   const handleClick = () => {

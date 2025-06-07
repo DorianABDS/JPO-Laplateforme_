@@ -44,18 +44,26 @@ export function Header() {
         {/* Bouton Inscription */}
         <Link
           to="/inscription"
-          className="font-Poppins font-semibold text-md bg-[#0062FF] text-white px-5 py-2 ml-5 rounded-full hover:bg-[#0051cc] transition-colors"
+          className="font-Poppins font-semibold text-md bg-gradient-to-br from-[#0062FF] via-[#0052CC] to-[#0041AA] text-white px-5 py-2 ml-5 rounded-full 
+                    transition-all duration-300 ease-in-out 
+                    hover:shadow-lg hover:-translate-y-1 hover:brightness-110"
         >
           Inscription
         </Link>
 
+
         {/* Bouton Connexion */}
         <Link
           to="/connexion"
-          className="font-Poppins font-semibold text-md border border-[#0062FF] text-[#0062FF] px-5 py-2 rounded-full hover:bg-[#0062FF] hover:text-white transition-colors"
+          className="font-Poppins font-semibold text-md border border-[#0062FF] text-[#0062FF] px-5 py-2 rounded-full 
+                    bg-white transition-all duration-300 ease-in-out 
+                    hover:text-white hover:bg-gradient-to-br 
+                    hover:from-[#0062FF] hover:via-[#0052CC] hover:to-[#0041AA] 
+                    hover:shadow-lg hover:-translate-y-1"
         >
           Connexion
         </Link>
+
       </div>
 
       {/* Bouton toggle menu mobile visible uniquement en dessous de md */}
