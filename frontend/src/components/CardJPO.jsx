@@ -160,7 +160,7 @@ export function CardJPO({ jpo, occupationPercentage = 0 }) {
           {/* Bouton détails */}
           <div className="flex justify-center md:justify-end">            
             <Button 
-              to={`/jpo:id`} 
+              to={`/jpo/${jpo.id}`} 
               label="Voir les détails" 
               className="w-full md:w-auto"
               aria-label={`Voir les détails de la JPO ${jpo.name}`}
