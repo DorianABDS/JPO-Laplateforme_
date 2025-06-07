@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import CardJPO from "../components/CardJPO";
 import HeroImg from "../assets/img/bg-hero5.jpg";
-import ButtonHero from "../components/ButtonHero";
+import HeroButton from "../components/HeroButton";
+import { CallToAction } from "../components/CallToAction";
 
 export default function Home() {
   const [jpos, setJpos] = useState([]);
@@ -34,7 +35,7 @@ export default function Home() {
           Découvrez nos campus grâce à nos journée porte ouverte, rencontrez nos
           enseignants et explorez nos formations.
         </p>
-        <ButtonHero label="Découvrir" to="/events" className="" />
+        <HeroButton label="Découvrir" to="/events" className="" />
       </section>
 
       <section>
@@ -61,7 +62,7 @@ export default function Home() {
           }}
         />
       </section>
-      
+
       <section>
         <CardJPO
           jpo={{
@@ -73,6 +74,7 @@ export default function Home() {
         />
       </section>
 
+      <CallToAction />
 
       {/* Liste des JPO
       <section className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
