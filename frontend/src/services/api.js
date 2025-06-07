@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { API_CONFIG, buildUrl, log } from './apiConfig.js';
 
-// === CLASSE D'ERREUR PERSONNALISÉE ===
+// Classe d'erreur API avec messages traduits
 export class ApiError extends Error {
   constructor(message, status = 0, data = null) {
     super(message);
@@ -11,7 +11,7 @@ export class ApiError extends Error {
     this.timestamp = new Date().toISOString();
   }
 
-  // Méthode pour obtenir un message d'erreur user-friendly
+  // Retourne message utilisateur selon le code d'erreur
   getUserMessage() {
     const { ERROR_MESSAGES } = API_CONFIG;
     
@@ -30,24 +30,22 @@ export class ApiError extends Error {
   }
 }
 
-// === FONCTION PRINCIPALE POUR LES APPELS API ===
+// Fonction principale pour toutes les requêtes API
 const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
   
-  // Configuration par défaut
   const config = {
     method: 'GET',
     headers: { ...API_CONFIG.DEFAULT_HEADERS },
     ...options,
   };
 
-  // Merge des headers
   if (options.headers) {
     config.headers = { ...config.headers, ...options.headers };
   }
 
-  // Timeout personnalisé
+  // Timeout automatique
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
   config.signal = controller.signal;
@@ -60,11 +58,10 @@ const apiRequest = async (endpoint, options = {}) => {
     
     clearTimeout(timeoutId);
 
-    // Vérification du statut HTTP
+    // Gestion des erreurs HTTP
     if (!response.ok) {
       let errorData = null;
       
-      // Tentative de récupération des détails d'erreur
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -86,7 +83,7 @@ const apiRequest = async (endpoint, options = {}) => {
       throw apiError;
     }
 
-    // Parsing de la réponse
+    // Parse de la réponse
     const contentType = response.headers.get('content-type');
     let data;
     
@@ -112,7 +109,7 @@ const apiRequest = async (endpoint, options = {}) => {
       throw error;
     }
     
-    // Erreur réseau ou autre
+    // Erreur réseau
     const networkError = new ApiError(
       `Erreur de connexion: ${error.message}`,
       0,
@@ -124,21 +121,11 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// === FONCTIONS API PUBLIQUES ===
-
-/**
- * Test de connexion avec le backend
- * @returns {Promise<Object>} Réponse du ping
- */
+// API Endpoints
 export const ping = async () => {
   return await apiRequest(API_CONFIG.ENDPOINTS.PING);
 };
 
-/**
- * Récupère la liste complète des JPO
- * @param {Object} params - Paramètres de requête (optionnel)
- * @returns {Promise<Array>} Liste des JPO
- */
 export const getJpoList = async (params = {}) => {
   const searchParams = new URLSearchParams(params);
   const endpoint = searchParams.toString() 
@@ -148,11 +135,6 @@ export const getJpoList = async (params = {}) => {
   return await apiRequest(endpoint);
 };
 
-/**
- * Récupère les détails d'une JPO par son ID
- * @param {string|number} id - ID de la JPO
- * @returns {Promise<Object>} Détails de la JPO
- */
 export const getJpoById = async (id) => {
   if (!id) {
     throw new ApiError('ID requis pour récupérer une JPO', 400);
@@ -161,11 +143,6 @@ export const getJpoById = async (id) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO_BY_ID(id));
 };
 
-/**
- * Crée une nouvelle JPO (pour plus tard)
- * @param {Object} jpoData - Données de la JPO
- * @returns {Promise<Object>} JPO créée
- */
 export const createJpo = async (jpoData) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO, {
     method: 'POST',
@@ -173,12 +150,6 @@ export const createJpo = async (jpoData) => {
   });
 };
 
-/**
- * Met à jour une JPO existante (pour plus tard)
- * @param {string|number} id - ID de la JPO
- * @param {Object} jpoData - Nouvelles données
- * @returns {Promise<Object>} JPO mise à jour
- */
 export const updateJpo = async (id, jpoData) => {
   if (!id) {
     throw new ApiError('ID requis pour mettre à jour une JPO', 400);
@@ -190,11 +161,6 @@ export const updateJpo = async (id, jpoData) => {
   });
 };
 
-/**
- * Supprime une JPO (pour plus tard)
- * @param {string|number} id - ID de la JPO
- * @returns {Promise<boolean>} Succès de la suppression
- */
 export const deleteJpo = async (id) => {
   if (!id) {
     throw new ApiError('ID requis pour supprimer une JPO', 400);
@@ -207,12 +173,7 @@ export const deleteJpo = async (id) => {
   return true;
 };
 
-// === FONCTIONS UTILITAIRES ===
-
-/**
- * Vérifie si l'API est accessible
- * @returns {Promise<boolean>} true si l'API répond
- */
+// Utilitaires
 export const checkApiHealth = async () => {
   try {
     await ping();
@@ -223,10 +184,6 @@ export const checkApiHealth = async () => {
   }
 };
 
-/**
- * Retourne les informations de configuration de l'API
- * @returns {Object} Configuration API
- */
 export const getApiInfo = () => ({
   baseUrl: API_CONFIG.BASE_URL,
   environment: API_CONFIG.ENVIRONMENT,
@@ -234,25 +191,18 @@ export const getApiInfo = () => ({
   logsEnabled: API_CONFIG.ENABLE_LOGS,
 });
 
-// === EXPORT PAR DÉFAUT ===
 export default {
-  // Fonctions principales
   ping,
   getJpoList,
   getJpoById,
   createJpo,
   updateJpo,
   deleteJpo,
-  
-  // Utilitaires
   checkApiHealth,
   getApiInfo,
-  
-  // Classes/Types
   ApiError,
 };
 
-// Props pour les fonctions API
 apiRequest.propTypes = {
   endpoint: PropTypes.string.isRequired,
   options: PropTypes.shape({
