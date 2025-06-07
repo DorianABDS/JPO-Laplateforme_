@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import CardJPO from "../components/CardJPO";
+import { CardJPO } from "../components/CardJPO";
 import HeroImg from "../assets/img/bg-hero5.jpg";
 import HeroButton from "../components/HeroButton";
 import { CallToAction } from "../components/CallToAction";
 
-export default function Home() {
+export function Home() {
   const [jpos, setJpos] = useState([]);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section
-        className="bg-cover bg-center px-4 sm:px-8 md:px-20 flex flex-col justify-center text-white"
+        className="bg-cover bg-center px-4 sm:px-8 md:px-20 flex flex-col justify-center text-white z-30"
         style={{
           backgroundImage: `url(${HeroImg})`,
           minHeight: "calc(100vh - 4rem)",
@@ -49,6 +49,7 @@ export default function Home() {
             max_capacity: 100,
             campus_id: "Martigues",
           }}
+          occupationPercentage={50}
         />
       </section>
 
@@ -60,6 +61,7 @@ export default function Home() {
             max_capacity: 50,
             campus_id: "Martigues",
           }}
+          occupationPercentage={81}
         />
       </section>
 
@@ -71,6 +73,7 @@ export default function Home() {
             max_capacity: 50,
             campus_id: "Martigues",
           }}
+          occupationPercentage={100}
         />
       </section>
 
