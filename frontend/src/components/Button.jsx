@@ -17,7 +17,7 @@ export function Button({
   const sizeClasses = {
     sm: "text-sm px-4 py-2",
     md: "md:text-base md:px-6 md:py-2",
-    lg: "lg:text-lg lg:px-8 lg:py-3",
+    lg: "lg:text-lg lg:px-5 lg:py-2",
   };
 
   // Assemblage des classes responsive
