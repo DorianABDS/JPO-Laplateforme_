@@ -1,16 +1,14 @@
 <?php
 
-// ✅ Namespace corrigé avec Backend en majuscule
 use JpoLaplateforme\Backend\Core\Router;
 
+// Initialisation du routeur
 $router = new Router();
 
-// Route de ping pour tester la connexion
-$router->get('/api/ping', 'ApiController@ping');
+// Routes API
+$router->get('/api/ping', 'ApiController@ping');        // Test de connexion
+$router->get('/api/jpo', 'JpoController@index');         // Liste des JPO
+$router->get('/api/jpo/{id}', 'JpoController@show');     // Détail d'une JPO
 
-// Routes des JPO
-$router->get('/api/jpo', 'JpoController@index');
-$router->get('/api/jpo/{id}', 'JpoController@show');
-
-// Traitement de la requête
+// Lancement du dispatching des routes
 $router->dispatch();

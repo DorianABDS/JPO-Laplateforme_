@@ -9,11 +9,13 @@ class Jpo
 {
     private PDO $pdo;
 
+    // Stocke la connexion à la base de données
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    // Récupère la liste des JPO avec filtres possibles
     public function getAll(array $filters = []): array
     {
         $sql = "
@@ -34,6 +36,7 @@ class Jpo
         $conditions = [];
         $params = [];
 
+        // Ajoute les filtres à la requête si fournis
         if (!empty($filters['campus_id'])) {
             $conditions[] = "od.campus_id = :campus_id";
             $params['campus_id'] = $filters['campus_id'];
@@ -54,22 +57,25 @@ class Jpo
             $params['search'] = '%' . $filters['search'] . '%';
         }
 
+        // Ajoute les conditions à la requête
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
 
+        // Regroupe les résultats et les trie par date
         $sql .= " GROUP BY od.jpo_id, od.name, od.date, od.max_capacity, od.campus_id, c.name, c.city";
         $sql .= " ORDER BY od.date ASC";
 
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
-            return $stmt->fetchAll();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             throw new Exception("Erreur lors de la récupération des JPO : " . $e->getMessage());
         }
     }
 
+    // Récupère les détails d'une JPO par son ID
     public function getById(int $id): ?array
     {
         $sql = "
@@ -94,20 +100,23 @@ class Jpo
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['id' => $id]);
-            $jpo = $stmt->fetch();
+            $jpo = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            // Retourne null si la JPO n'existe pas
             if (!$jpo) {
                 return null;
             }
 
+            // Ajoute les commentaires liés à cette JPO
             $jpo['comments'] = $this->getCommentsByJpoId($id);
-            
+
             return $jpo;
         } catch (\PDOException $e) {
             throw new Exception("Erreur lors de la récupération de la JPO : " . $e->getMessage());
         }
     }
 
+    // Récupère tous les commentaires liés à une JPO
     private function getCommentsByJpoId(int $jpoId): array
     {
         $sql = "
@@ -129,7 +138,7 @@ class Jpo
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['jpo_id' => $jpoId]);
-            return $stmt->fetchAll();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             throw new Exception("Erreur lors de la récupération des commentaires : " . $e->getMessage());
         }
