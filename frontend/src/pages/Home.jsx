@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CardJPO } from "../components/CardJPO";
+import { EventCards } from "../components/EventCards";
 import HeroImg from "../assets/img/bg-hero5.jpg";
 import { HeroButton } from "../components/HeroButton";
 import { CallToAction } from "../components/CallToAction";
@@ -44,7 +44,7 @@ export function Home() {
         <p className="font-trench text-4xl font-bold text-[#0062FF] mt-20 mb-20 flex justify-center text-center px-4">
           Journée porte ouverte à venir
         </p>
-        <CardJPO
+        <EventCards
           jpo={{
             name: "Martigues - Journée porte ouverte",
             date: "2025-06-16",
@@ -56,7 +56,7 @@ export function Home() {
       </section>
 
       <section>
-        <CardJPO
+        <EventCards
           jpo={{
             name: "Martigues - Journée porte ouverte",
             date: "2025-06-17",
@@ -68,7 +68,7 @@ export function Home() {
       </section>
 
       <section>
-        <CardJPO
+        <EventCards
           jpo={{
             name: "Martigues - Journée porte ouverte",
             date: "2025-06-17",
@@ -85,7 +85,7 @@ export function Home() {
       {/*
       <section className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {jpos.map((open_day) => (
-          <CardJPO key={open_day.id} jpo={open_day} />
+          <EventCards key={open_day.id} jpo={open_day} />
         ))}
       </section>
       */}
