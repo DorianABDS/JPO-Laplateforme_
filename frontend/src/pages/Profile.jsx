@@ -52,7 +52,7 @@ export function Profile() {
           {/* En-tête de la carte */}
           <div className="bg-gradient-to-br from-[#0062FF] via-[#0052CC] to-[#0041AA] px-8 py-6">
             <div className="flex flex-col items-center justify-center md:flex-row md:justify-between gap-5">
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col items-center justify-center text-center gap-4 md:flex-row md:justify-between md:text-start md:items-center md:space-x-1">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
                   <User className="w-8 h-8 text-[#0062FF]" />
                 </div>
@@ -68,7 +68,7 @@ export function Profile() {
               {!isEditing && (
                 <button
                   onClick={handleEdit}
-                  className="bg-white text-[#0062FF] px-4 py-2 rounded-full transition-all duration-200 flex items-center space-x-2 hover:-translate-y-1"
+                  className="hidden sm:flex bg-white text-[#0062FF] px-4 py-2 rounded-full transition-all duration-200 items-center space-x-2 hover:-translate-y-1"
                 >
                   <Edit3 className="w-4 h-4" />
                   <span>Modifier</span>
@@ -105,8 +105,19 @@ export function Profile() {
                   <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Email</label>
                   <div className="bg-gray-100 rounded-lg p-4 border-l-8 border-[#0062FF] flex items-center space-x-3">
                     <Mail className="w-5 h-5 text-[#0041AA]" />
-                    <p className="text-gray-800 font-medium text-lg">{userInfo.email}</p>
+                    <p className="text-gray-800 font-medium overflow-x-auto text-lg">{userInfo.email}</p>
                   </div>
+                  {!isEditing && (
+                    <div className="flex sm:hidden pt-6">
+                      <button
+                        onClick={handleEdit}
+                        className="w-full bg-gradient-to-br from-[#0062FF] via-[#0052CC] to-[#0041AA] text-white px-6 py-3 shadow rounded-full transition-all duration-200 flex items-center justify-center space-x-2 font-medium hover:-translate-y-1"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        <span>Modifier</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
