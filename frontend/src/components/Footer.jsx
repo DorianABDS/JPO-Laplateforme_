@@ -3,7 +3,7 @@ import { Instagram, Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-br  from-[#0062FF] via-[#0052CC] to-[#0041AA] text-white rounded p-10 flex flex-col items-center gap-8">
+    <footer className="bg-gradient-to-br from-[#0062FF] via-[#0052CC] to-[#0041AA] text-white rounded p-10 flex flex-col items-center gap-8">
       
       {/* Menu de navigation avec liens internes */}
       <nav className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 text-center">
