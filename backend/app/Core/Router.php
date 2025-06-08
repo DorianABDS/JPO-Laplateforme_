@@ -8,28 +8,34 @@ class Router
 {
     private array $routes = [];
 
+    // Route GET
     public function get(string $path, string $controller): void
     {
         $this->addRoute('GET', $path, $controller);
     }
 
+    // Route POST
     public function post(string $path, string $controller): void
     {
         $this->addRoute('POST', $path, $controller);
     }
 
+    // Route PUT
     public function put(string $path, string $controller): void
     {
         $this->addRoute('PUT', $path, $controller);
     }
 
+    // Route DELETE
     public function delete(string $path, string $controller): void
     {
         $this->addRoute('DELETE', $path, $controller);
     }
 
+    // Ajoute une route avec méthode, chemin et contrôleur
     private function addRoute(string $method, string $path, string $controller): void
     {
+        // Remplace les paramètres dynamiques par des regex
         $pattern = preg_replace('/\{([^}]+)\}/', '(?P<$1>[^/]+)', $path);
         $pattern = "#^" . $pattern . "$#";
 
@@ -41,16 +47,19 @@ class Router
         ];
     }
 
+    // Cherche et exécute la route correspondante
     public function dispatch(): void
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // ✅ CORRECTION : Nettoyer l'URI pour extraire seulement la partie API
+        // Nettoie l'URI
         $uri = $this->cleanUri($uri);
 
+        // Gère les requêtes préflight (CORS)
         Response::handlePreflight();
 
+        // Parcourt les routes pour trouver une correspondance
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($route['pattern'], $uri, $matches)) {
                 $this->callController($route['controller'], $matches);
@@ -58,39 +67,32 @@ class Router
             }
         }
 
+        // Si aucune route trouvée
         Response::error('Route non trouvée', 404);
     }
 
-    /**
-     * Nettoie l'URI pour extraire seulement la partie relative à l'API
-     */
+    // Supprime la base du chemin pour obtenir une URI propre
     private function cleanUri(string $uri): string
     {
-        // Récupérer le chemin du script pour déterminer la base
-        $scriptName = $_SERVER['SCRIPT_NAME']; // Ex: /JPO-Laplateforme_/Backend/public/index.php
-        $basePath = dirname($scriptName); // Ex: /JPO-Laplateforme_/Backend/public
-        
-        // Retirer /public de la base pour avoir : /JPO-Laplateforme_/Backend
-        $basePath = dirname($basePath); // Ex: /JPO-Laplateforme_/Backend
-        
-        // Si l'URI commence par cette base, la retirer
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $basePath = dirname($scriptName);
+        $basePath = dirname($basePath);
+
         if (strpos($uri, $basePath) === 0) {
             $uri = substr($uri, strlen($basePath));
         }
-        
-        // S'assurer que l'URI commence par /
+
         if (!str_starts_with($uri, '/')) {
             $uri = '/' . $uri;
         }
-        
+
         return $uri;
     }
 
+    // Appelle la méthode d’un contrôleur
     private function callController(string $controller, array $params = []): void
     {
         [$controllerName, $method] = explode('@', $controller);
-        
-        // ✅ Namespace corrigé avec Backend en majuscule et Controllers
         $controllerClass = "JpoLaplateforme\\Backend\\Controllers\\{$controllerName}";
 
         if (!class_exists($controllerClass)) {
@@ -105,8 +107,9 @@ class Router
             return;
         }
 
+        // Récupère les paramètres nommés (issus de l'URL)
         $namedParams = array_filter($params, 'is_string', ARRAY_FILTER_USE_KEY);
-        
+
         try {
             $controllerInstance->$method($namedParams);
         } catch (\Exception $e) {

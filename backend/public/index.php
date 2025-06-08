@@ -1,23 +1,22 @@
 <?php
-// Configuration d'erreurs pour le développement
+// Affichage des erreurs (en développement uniquement)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Chargement de l'autoloader de Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 }
 
-// ✅ Chemin corrigé vers database.php
+// Connexion à la base de données
 require_once __DIR__ . '/../app/Config/database.php';
 
-// Chargement des variables d'environnement
+// Chargement des variables d'environnement depuis le fichier .env
 $envFile = __DIR__ . '/../.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) {
-            continue;
-        }
+        if (strpos(trim($line), '#') === 0) continue;
         if (strpos($line, '=') !== false) {
             list($name, $value) = explode('=', $line, 2);
             $_ENV[trim($name)] = trim($value);
@@ -25,9 +24,11 @@ if (file_exists($envFile)) {
     }
 }
 
+// Fuseau horaire par défaut
 date_default_timezone_set('Europe/Paris');
 
-register_shutdown_function(function() {
+// Gestion des erreurs fatales
+register_shutdown_function(function () {
     $error = error_get_last();
     if ($error && $error['type'] === E_ERROR) {
         http_response_code(500);
@@ -43,10 +44,11 @@ register_shutdown_function(function() {
     }
 });
 
-set_exception_handler(function($exception) {
+// Gestion des exceptions non capturées
+set_exception_handler(function ($exception) {
     http_response_code(500);
     header('Content-Type: application/json');
-    
+
     $response = [
         'success' => false,
         'error' => [
@@ -55,7 +57,7 @@ set_exception_handler(function($exception) {
         ],
         'timestamp' => date('c')
     ];
-    
+
     if (($_ENV['APP_DEBUG'] ?? 'false') === 'true') {
         $response['error']['debug'] = [
             'message' => $exception->getMessage(),
@@ -64,10 +66,11 @@ set_exception_handler(function($exception) {
             'trace' => $exception->getTraceAsString()
         ];
     }
-    
+
     echo json_encode($response, JSON_PRETTY_PRINT);
 });
 
+// Chargement des routes
 try {
     require_once __DIR__ . '/../routes/api.php';
 } catch (Exception $e) {
