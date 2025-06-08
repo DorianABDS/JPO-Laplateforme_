@@ -81,7 +81,8 @@ export function Header() {
         <div className="absolute top-full left-0 w-full bg-white text-[#0062FF] font-semibold shadow-md flex flex-col items-center gap-4 py-4 md:hidden z-50">
           {/* Liens de navigation mobile avec fermeture du menu au clic */}
           <Link to="/" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Accueil</Link>
-          <Link to="/profile" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Profil</Link>
+          <Link to="/profil" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Profil</Link>
+          <Link to="/events" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Événements</Link>
           <Link to="/inscription" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Inscription</Link>
           <Link to="/login" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Connexion</Link>
         </div>
