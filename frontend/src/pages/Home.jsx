@@ -29,10 +29,10 @@ export function Home() {
           minHeight: "calc(100vh - 4rem)",
         }}
       >
-        <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-trench mb-2">
+        <h1 className="text-4xl font-trench mb-2 text-center sm:text-7xl md:text-8xl md:text-start lg:text-9xl ">
           LaPlateforme
         </h1>
-        <p className="max-w-2xl text-base sm:text-lg md:text-xl font-Poppins mb-6">
+        <p className="max-w-2xl text-base text-center sm:text-lg md:text-xl md:text-start font-Poppins mb-6">
           Découvrez nos campus grâce à nos journée porte ouverte, rencontrez nos
           enseignants et explorez nos formations.
         </p>
