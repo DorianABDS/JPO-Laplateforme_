@@ -18,9 +18,10 @@ class Database
 
     public function __construct()
     {
-        // Charger les variables d'environnement depuis le fichier .env
+        // Charge les variables d'env depuis .env
         $this->loadEnv();
         
+        // Initialise les paramètres de connexion
         $this->host = $_ENV['DB_HOST'] ?? 'localhost';
         $this->dbname = $_ENV['DB_NAME'] ?? '';
         $this->username = $_ENV['DB_USER'] ?? '';
@@ -30,7 +31,7 @@ class Database
     }
 
     /**
-     * Charge les variables d'environnement depuis le fichier .env
+     * Lit le fichier .env et remplit $_ENV
      */
     private function loadEnv()
     {
@@ -44,7 +45,7 @@ class Database
         
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
-                continue; // Ignorer les commentaires
+                continue; // Ignore les commentaires
             }
             
             list($name, $value) = explode('=', $line, 2);
@@ -53,7 +54,7 @@ class Database
     }
 
     /**
-     * Établit la connexion à la base de données
+     * Crée une connexion PDO si pas déjà connectée
      * @return PDO
      */
     public function connect()
@@ -79,7 +80,7 @@ class Database
     }
 
     /**
-     * Retourne l'instance PDO (alias de connect pour plus de simplicité)
+     * Récupère l'instance PDO (alias de connect)
      * @return PDO
      */
     public function getPdo()
@@ -88,7 +89,7 @@ class Database
     }
 
     /**
-     * Ferme la connexion à la base de données
+     * Coupe la connexion à la base
      */
     public function disconnect()
     {

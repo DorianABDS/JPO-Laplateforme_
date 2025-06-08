@@ -4,6 +4,7 @@ namespace JpoLaplateforme\Backend\Core;
 
 class Response
 {
+    // Envoie une réponse JSON avec succès
     public static function success($data = null, int $statusCode = 200): void
     {
         self::json([
@@ -13,6 +14,7 @@ class Response
         ], $statusCode);
     }
 
+    // Envoie une réponse JSON en cas d’erreur
     public static function error(string $message, int $statusCode = 400, ?array $errors = null): void
     {
         $response = [
@@ -31,6 +33,7 @@ class Response
         self::json($response, $statusCode);
     }
 
+    // Envoie une réponse JSON avec les bons headers
     public static function json(array $data, int $statusCode = 200): void
     {
         self::setCorsHeaders();
@@ -40,6 +43,7 @@ class Response
         exit;
     }
 
+    // Ajoute les en-têtes CORS à la réponse
     private static function setCorsHeaders(): void
     {
         $allowedOrigins = explode(',', $_ENV['CORS_ORIGINS'] ?? 'http://localhost:5173');
@@ -54,6 +58,7 @@ class Response
         header('Access-Control-Allow-Credentials: true');
     }
 
+    // Gère les requêtes préflight (OPTIONS)
     public static function handlePreflight(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
