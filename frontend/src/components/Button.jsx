@@ -9,8 +9,19 @@ export function Button({
 }) {
   const navigate = useNavigate();
 
-  // Classes CSS de base
-  const baseClass = "mt-4 bg-white text-[#0062FF] px-6 py-2 rounded-full font-semibold shadow transition duration-300 ease-in-out hover:bg-gradient-to-br hover:from-[#0062FF] hover:via-[#0052CC] hover:to-[#0041AA] hover:text-white hover:shadow-lg hover:-translate-y-1";
+  // Style de base du bouton
+  const baseClass =
+    "mt-4 bg-white text-[#0062FF] rounded-full font-semibold shadow transition duration-300 ease-in-out hover:bg-gradient-to-br hover:from-[#0062FF] hover:via-[#0052CC] hover:to-[#0041AA] hover:text-white hover:shadow-lg hover:-translate-y-1";
+
+  // Classes responsive pour texte et padding selon taille d'écran
+  const sizeClasses = {
+    sm: "text-sm px-4 py-2",
+    md: "md:text-base md:px-6 md:py-2",
+    lg: "lg:text-lg lg:px-8 lg:py-3",
+  };
+
+  // Assemblage des classes responsive
+  const sizeClass = `${sizeClasses.sm} ${sizeClasses.md} ${sizeClasses.lg}`;
 
   // Gestion du clic
   const handleClick = () => {
@@ -23,7 +34,7 @@ export function Button({
     <button
       type={type}
       onClick={handleClick}
-      className={`${baseClass} ${className}`}
+      className={`${baseClass} ${sizeClass} ${className}`}
       aria-label={ariaLabel ?? label}
     >
       {label}
