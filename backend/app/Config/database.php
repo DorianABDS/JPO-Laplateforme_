@@ -1,7 +1,5 @@
 <?php
 
-namespace JpoLaplateforme\Backend\Config;
-
 use PDO;
 use PDOException;
 use Exception;
@@ -23,8 +21,8 @@ class Database
         
         // Initialise les paramètres de connexion
         $this->host = $_ENV['DB_HOST'] ?? 'localhost';
-        $this->dbname = $_ENV['DB_NAME'] ?? '';
-        $this->username = $_ENV['DB_USER'] ?? '';
+        $this->dbname = $_ENV['DB_NAME'] ?? 'jpo-laplateforme_';
+        $this->username = $_ENV['DB_USER'] ?? 'root';
         $this->password = $_ENV['DB_PASS'] ?? '';
         $this->port = $_ENV['DB_PORT'] ?? '3306';
         $this->charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
@@ -36,28 +34,27 @@ class Database
     private function loadEnv()
     {
         $envFile = __DIR__ . '/../../.env';
-        
+
         if (!file_exists($envFile)) {
-            throw new Exception("Le fichier .env n'existe pas");
+            // Si pas de .env, on continue avec les valeurs par défaut
+            return;
         }
 
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
-                continue; // Ignore les commentaires
+                continue;
             }
-            
-            list($name, $value) = explode('=', $line, 2);
-            $_ENV[trim($name)] = trim($value);
+
+            if (strpos($line, '=') !== false) {
+                list($name, $value) = explode('=', $line, 2);
+                $_ENV[trim($name)] = trim($value);
+            }
         }
     }
 
-    /**
-     * Crée une connexion PDO si pas déjà connectée
-     * @return PDO
-     */
-    public function connect()
+    public function connect(): PDO
     {
         if ($this->pdo === null) {
             try {
@@ -79,19 +76,12 @@ class Database
         return $this->pdo;
     }
 
-    /**
-     * Récupère l'instance PDO (alias de connect)
-     * @return PDO
-     */
-    public function getPdo()
+    public function getPdo(): PDO
     {
         return $this->connect();
     }
 
-    /**
-     * Coupe la connexion à la base
-     */
-    public function disconnect()
+    public function disconnect(): void
     {
         $this->pdo = null;
     }
