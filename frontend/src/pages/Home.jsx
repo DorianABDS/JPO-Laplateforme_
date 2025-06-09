@@ -46,27 +46,9 @@ export function Home() {
 
       {/* Section JPO avec design moderne */}
       <section className="bg-white relative overflow-hidden py-20">
-        {/* Éléments graphiques décoratifs */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-          {/* Cercle décoratif en haut à droite */}
-          <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-gradient-to-br from-[#0062FF]/10 to-[#0062FF]/5 blur-3xl"></div>
-          
-          {/* Forme géométrique en bas à gauche */}
-          <div className="absolute -bottom-20 -left-20 w-40 h-40 rotate-45 bg-gradient-to-tr from-[#0062FF]/8 to-transparent rounded-3xl"></div>
-          
-          {/* Lignes décoratives */}
-          <div className="absolute top-1/4 right-1/4 w-32 h-0.5 bg-gradient-to-r from-[#0062FF]/20 to-transparent rotate-12"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-24 h-0.5 bg-gradient-to-l from-[#0062FF]/15 to-transparent -rotate-12"></div>
-          
-          {/* Points décoratifs */}
-          <div className="absolute top-1/2 left-1/4 w-2 h-2 rounded-full bg-[#0062FF]/30"></div>
-          <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 rounded-full bg-[#0062FF]/20"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-3 h-3 rounded-full bg-[#0062FF]/15"></div>
-        </div>
-
         {/* Contenu principal */}
         <div className="relative z-10">
-          {/* Titre avec effet moderne */}
+          {/* Titre */}
           <div className="text-center mb-16">
             <div className="inline-block relative">
               <h2 className="font-trench text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0062FF] mb-4 px-4">
@@ -80,7 +62,7 @@ export function Home() {
             </p>
           </div>
 
-          {/* Container pour les cartes */}
+          {/* Container cartes */}
           <div className="">
             <EventCards
               jpo={{
@@ -114,8 +96,6 @@ export function Home() {
           </div>
         </div>
 
-        {/* Effet de vague en bas de section */}
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-50/50 to-transparent"></div>
       </section>
 
       <CallToAction />
