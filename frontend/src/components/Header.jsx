@@ -83,6 +83,7 @@ export function Header() {
           <Link to="/" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Accueil</Link>
           <Link to="/profil" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Profil</Link>
           <Link to="/events" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Événements</Link>
+          <Link to="/admindashboard" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Admin</Link>
           <Link to="/inscription" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Inscription</Link>
           <Link to="/login" className="hover:text-blue-500" onClick={() => setIsOpen(false)}>Connexion</Link>
         </div>
