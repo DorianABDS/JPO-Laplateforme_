@@ -64,9 +64,9 @@ useFetchData.propTypes = {
   options: PropTypes.object
 };
 
-// Fonctions spécifiques de récupération de données
+// Fonctions spécifiques de récupération de données - ENDPOINTS CORRIGÉS
 export const getUsers = async (params = {}) => {
-  return await fetchData(API_CONFIG.ENDPOINTS.USER_LIST || '/api/users', params);
+  return await fetchData(API_CONFIG.ENDPOINTS.USERS, params); // ← CORRIGÉ
 };
 
 getUsers.propTypes = {
@@ -75,7 +75,7 @@ getUsers.propTypes = {
 
 export const getUser = async (userId) => {
   if (!userId) throw new Error('User ID requis');
-  return await fetchData(API_CONFIG.ENDPOINTS.USER_GET(userId));
+  return await fetchData(API_CONFIG.ENDPOINTS.USER_BY_ID(userId)); // ← CORRIGÉ
 };
 
 getUser.propTypes = {
@@ -100,11 +100,11 @@ getJpo.propTypes = {
 };
 
 export const getCampus = async () => {
-  return await fetchData('/api/campus');
+  return await fetchData(API_CONFIG.ENDPOINTS.CAMPUS); // ← CORRIGÉ
 };
 
 export const getRegistrations = async (params = {}) => {
-  return await fetchData('/api/registrations', params);
+  return await fetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params); // ← CORRIGÉ
 };
 
 getRegistrations.propTypes = {
@@ -112,7 +112,7 @@ getRegistrations.propTypes = {
 };
 
 export const getComments = async (params = {}) => {
-  return await fetchData('/api/comments', params);
+  return await fetchData(API_CONFIG.ENDPOINTS.COMMENTS, params); // ← CORRIGÉ
 };
 
 getComments.propTypes = {
@@ -120,12 +120,12 @@ getComments.propTypes = {
 };
 
 export const getRoles = async () => {
-  return await fetchData('/api/roles');
+  return await fetchData(API_CONFIG.ENDPOINTS.ROLES); // ← CORRIGÉ
 };
 
-// Hooks React spécialisés
+// Hooks React spécialisés - ENDPOINTS CORRIGÉS
 export const useUsers = (params = {}) => {
-  return useFetchData(API_CONFIG.ENDPOINTS.USER_LIST || '/api/users', params);
+  return useFetchData(API_CONFIG.ENDPOINTS.USERS, params); // ← CORRIGÉ
 };
 
 useUsers.propTypes = {
@@ -133,7 +133,7 @@ useUsers.propTypes = {
 };
 
 export const useUser = (userId) => {
-  const endpoint = userId ? API_CONFIG.ENDPOINTS.USER_GET(userId) : null;
+  const endpoint = userId ? API_CONFIG.ENDPOINTS.USER_BY_ID(userId) : null; // ← CORRIGÉ
   return useFetchData(endpoint);
 };
 
@@ -142,11 +142,11 @@ useUser.propTypes = {
 };
 
 export const useCampus = () => {
-  return useFetchData('/api/campus');
+  return useFetchData(API_CONFIG.ENDPOINTS.CAMPUS); // ← CORRIGÉ
 };
 
 export const useRegistrations = (params = {}) => {
-  return useFetchData('/api/registrations', params);
+  return useFetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params); // ← CORRIGÉ
 };
 
 useRegistrations.propTypes = {
@@ -154,7 +154,7 @@ useRegistrations.propTypes = {
 };
 
 export const useComments = (params = {}) => {
-  return useFetchData('/api/comments', params);
+  return useFetchData(API_CONFIG.ENDPOINTS.COMMENTS, params); // ← CORRIGÉ
 };
 
 useComments.propTypes = {
@@ -168,9 +168,9 @@ export const useDashboardData = () => {
   const { data: campus, loading: campusLoading } = useCampus();
   
   return {
-    users: users?.users || [],
-    jpos: jpos?.jpos || jpos || [],
-    campus: campus?.campus || campus || [],
+    users: users?.users || users?.data?.users || [],
+    jpos: jpos?.jpos || jpos?.data?.jpos || [],
+    campus: campus?.campus || campus?.data?.campus || [],
     loading: usersLoading || jposLoading || campusLoading
   };
 };
