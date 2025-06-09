@@ -2,17 +2,16 @@ import PropTypes from 'prop-types';
 import { apiRequest } from './api.js';
 import { API_CONFIG, log } from './apiConfig.js';
 
-// === CACHE LOCAL POUR LES DONNÉES ===
+// Cache local pour les données de la base
 let databaseCache = {
   data: null,
   lastFetch: null,
   isLoading: false,
 };
 
-// Durée de validité du cache (en millisecondes) - 5 minutes par défaut
-let CACHE_DURATION = 5 * 60 * 1000;
+let CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-// === CLASSE POUR GÉRER LES DÉTAILS DE LA BASE ===
+// Classe wrapper pour les détails de la base
 export class DatabaseDetails {
   constructor(data) {
     this.raw = data;
@@ -23,7 +22,6 @@ export class DatabaseDetails {
     this.lastUpdated = new Date().toISOString();
   }
 
-  // Getter pour les informations de base
   getBasicInfo() {
     return {
       name: this.metadata.name || 'Unknown',
@@ -35,7 +33,6 @@ export class DatabaseDetails {
     };
   }
 
-  // Getter pour les tables
   getTables() {
     return this.tables.map(table => ({
       name: table.name,
@@ -48,20 +45,17 @@ export class DatabaseDetails {
     }));
   }
 
-  // Getter pour une table spécifique
   getTable(tableName) {
     return this.tables.find(table => 
       table.name.toLowerCase() === tableName.toLowerCase()
     );
   }
 
-  // Getter pour les colonnes d'une table
   getTableColumns(tableName) {
     const table = this.getTable(tableName);
     return table?.columns || [];
   }
 
-  // Getter pour les statistiques
   getStatistics() {
     return {
       totalTables: this.tables.length,
@@ -75,7 +69,6 @@ export class DatabaseDetails {
     };
   }
 
-  // Rechercher dans les tables
   searchTables(searchTerm) {
     if (!searchTerm) return this.getTables();
     
@@ -86,14 +79,12 @@ export class DatabaseDetails {
     );
   }
 
-  // Vérifier si une table existe
   hasTable(tableName) {
     return this.tables.some(table => 
       table.name.toLowerCase() === tableName.toLowerCase()
     );
   }
 
-  // Obtenir les relations entre tables (depuis les données PHP)
   getTableRelations(tableName) {
     const table = this.getTable(tableName);
     return {
@@ -102,41 +93,32 @@ export class DatabaseDetails {
     };
   }
 
-  // Obtenir le schéma d'une table (depuis les données PHP)
   getTableSchema(tableName) {
     const table = this.getTable(tableName);
     return table?.columns || [];
   }
 }
 
-// PropTypes pour DatabaseDetails
 DatabaseDetails.propTypes = {
   data: PropTypes.object
 };
 
-// === FONCTIONS PRINCIPALES ===
-
-/**
- * Récupère les détails de la base de données depuis l'API PHP
- * @param {boolean} forceRefresh - Force le rechargement même si le cache est valide
- * @param {Object} options - Options additionnelles
- * @returns {Promise<DatabaseDetails>} Détails de la base de données
- */
+// Récupérer les détails de la base depuis l'API
 export const getDatabaseDetails = async (forceRefresh = false, options = {}) => {
   const now = Date.now();
   
-  // Vérifier le cache si pas de force refresh
+  // Vérifier le cache si pas de rafraîchissement forcé
   if (!forceRefresh && databaseCache.data && databaseCache.lastFetch) {
     const cacheAge = now - databaseCache.lastFetch;
     if (cacheAge < CACHE_DURATION) {
-      log('info', '📋 Using cached database details');
+      log('info', 'Using cached database details');
       return new DatabaseDetails(databaseCache.data);
     }
   }
 
   // Éviter les appels multiples simultanés
   if (databaseCache.isLoading) {
-    log('info', '⏳ Database details already loading, waiting...');
+    log('info', 'Database details already loading, waiting...');
     while (databaseCache.isLoading) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
@@ -145,9 +127,8 @@ export const getDatabaseDetails = async (forceRefresh = false, options = {}) => 
 
   try {
     databaseCache.isLoading = true;
-    log('info', '🔍 Fetching database details from PHP API');
+    log('info', 'Fetching database details from API');
 
-    // Appel à votre endpoint PHP
     const endpoint = API_CONFIG.ENDPOINTS.DATABASE_INFO || '/api/database/info';
     const data = await apiRequest(endpoint, {
       method: 'GET',
@@ -161,15 +142,15 @@ export const getDatabaseDetails = async (forceRefresh = false, options = {}) => 
     databaseCache.data = data;
     databaseCache.lastFetch = now;
     
-    log('info', '✅ Database details retrieved successfully');
+    log('info', 'Database details retrieved successfully');
     return new DatabaseDetails(data);
 
   } catch (error) {
-    log('error', '❌ Failed to fetch database details:', error);
+    log('error', 'Failed to fetch database details:', error);
     
-    // En cas d'erreur, retourner les données du cache si disponibles
+    // Retourner les données du cache obsolètes si disponibles
     if (databaseCache.data) {
-      log('warn', '⚠️ Using stale cache data due to error');
+      log('warn', 'Using stale cache data due to error');
       return new DatabaseDetails(databaseCache.data);
     }
     
@@ -179,109 +160,79 @@ export const getDatabaseDetails = async (forceRefresh = false, options = {}) => 
   }
 };
 
-// PropTypes pour getDatabaseDetails
 getDatabaseDetails.propTypes = {
   forceRefresh: PropTypes.bool,
   options: PropTypes.object
 };
 
-/**
- * Récupère uniquement les informations de base
- * @returns {Promise<Object>} Informations de base
- */
+// Obtenir uniquement les infos de base de la base
 export const getDatabaseBasicInfo = async () => {
   const details = await getDatabaseDetails();
   return details.getBasicInfo();
 };
 
-/**
- * Récupère la liste des tables
- * @param {string} searchTerm - Terme de recherche optionnel
- * @returns {Promise<Array>} Liste des tables
- */
+// Obtenir la liste des tables avec recherche optionnelle
 export const getDatabaseTables = async (searchTerm = null) => {
   const details = await getDatabaseDetails();
   return searchTerm ? details.searchTables(searchTerm) : details.getTables();
 };
 
-// PropTypes pour getDatabaseTables
 getDatabaseTables.propTypes = {
   searchTerm: PropTypes.string
 };
 
-/**
- * Récupère les détails d'une table spécifique depuis l'API PHP
- * @param {string} tableName - Nom de la table
- * @returns {Promise<Object|null>} Détails de la table
- */
+// Obtenir les détails d'une table spécifique depuis l'API
 export const getTableDetails = async (tableName) => {
   if (!tableName) {
     throw new Error('Nom de table requis');
   }
 
   try {
-    log('info', `🔍 Fetching table details for: ${tableName}`);
+    log('info', `Fetching table details for: ${tableName}`);
     
     const endpoint = API_CONFIG.ENDPOINTS.DATABASE_TABLE(tableName);
     const data = await apiRequest(endpoint);
     
-    log('info', `✅ Table details retrieved for: ${tableName}`);
+    log('info', `Table details retrieved for: ${tableName}`);
     return data;
     
   } catch (error) {
-    log('error', `❌ Failed to fetch table details for ${tableName}:`, error);
+    log('error', `Failed to fetch table details for ${tableName}:`, error);
     throw error;
   }
 };
 
-// PropTypes pour getTableDetails
 getTableDetails.propTypes = {
   tableName: PropTypes.string.isRequired
 };
 
-/**
- * Récupère les statistiques de la base
- * @returns {Promise<Object>} Statistiques
- */
+// Obtenir les statistiques de la base
 export const getDatabaseStatistics = async () => {
   const details = await getDatabaseDetails();
   return details.getStatistics();
 };
 
-/**
- * Vérifie si une table existe
- * @param {string} tableName - Nom de la table
- * @returns {Promise<boolean>} true si la table existe
- */
+// Vérifier si une table existe
 export const tableExists = async (tableName) => {
   const details = await getDatabaseDetails();
   return details.hasTable(tableName);
 };
 
-// PropTypes pour tableExists
 tableExists.propTypes = {
   tableName: PropTypes.string.isRequired
 };
 
-/**
- * Récupère le schéma d'une table depuis l'API PHP
- * @param {string} tableName - Nom de la table
- * @returns {Promise<Array>} Schéma de la table
- */
+// Obtenir le schéma d'une table depuis l'API
 export const getTableSchema = async (tableName) => {
   const tableDetails = await getTableDetails(tableName);
   return tableDetails.columns || [];
 };
 
-// PropTypes pour getTableSchema
 getTableSchema.propTypes = {
   tableName: PropTypes.string.isRequired
 };
 
-/**
- * Récupère les tables spécifiques à l'application JPO depuis l'API
- * @returns {Promise<Array>} Tables JPO avec leurs détails
- */
+// Obtenir les tables spécifiques aux JPO
 export const getJpoTables = async () => {
   const details = await getDatabaseDetails();
   const jpoTableNames = DEFAULT_CONFIG.JPO_TABLES;
@@ -297,10 +248,7 @@ export const getJpoTables = async () => {
     }));
 };
 
-/**
- * Récupère toutes les relations de la base depuis l'API PHP
- * @returns {Promise<Object>} Mapping complet des relations
- */
+// Obtenir toutes les relations de la base
 export const getAllRelations = async () => {
   const details = await getDatabaseDetails();
   const relations = {};
@@ -315,11 +263,7 @@ export const getAllRelations = async () => {
   return relations;
 };
 
-/**
- * Vérifie les contraintes d'intégrité pour une table depuis l'API
- * @param {string} tableName - Nom de la table
- * @returns {Promise<Object>} Informations sur les contraintes
- */
+// Obtenir les contraintes d'une table
 export const getTableConstraints = async (tableName) => {
   const tableDetails = await getTableDetails(tableName);
   const columns = tableDetails.columns || [];
@@ -337,29 +281,20 @@ export const getTableConstraints = async (tableName) => {
   };
 };
 
-// PropTypes pour getTableConstraints
 getTableConstraints.propTypes = {
   tableName: PropTypes.string.isRequired
 };
 
-// === FONCTIONS UTILITAIRES ===
-
-/**
- * Vide le cache de la base de données
- */
+// Utilitaires de cache
 export const clearDatabaseCache = () => {
   databaseCache = {
     data: null,
     lastFetch: null,
     isLoading: false,
   };
-  log('info', '🧹 Database cache cleared');
+  log('info', 'Database cache cleared');
 };
 
-/**
- * Retourne l'état du cache
- * @returns {Object} État du cache
- */
 export const getCacheStatus = () => {
   const now = Date.now();
   const age = databaseCache.lastFetch ? now - databaseCache.lastFetch : null;
@@ -373,10 +308,6 @@ export const getCacheStatus = () => {
   };
 };
 
-/**
- * Configuration du cache
- * @param {number} durationMs - Durée de validité du cache en ms
- */
 export const configureCacheDuration = (durationMs) => {
   if (durationMs > 0) {
     CACHE_DURATION = durationMs;
@@ -384,39 +315,13 @@ export const configureCacheDuration = (durationMs) => {
   }
 };
 
-// PropTypes pour configureCacheDuration
 configureCacheDuration.propTypes = {
   durationMs: PropTypes.number.isRequired
 };
 
-// === EXPORT PAR DÉFAUT ===
-export default {
-  // Fonctions principales
-  getDatabaseDetails,
-  getDatabaseBasicInfo,
-  getDatabaseTables,
-  getTableDetails,
-  getDatabaseStatistics,
-  tableExists,
-  getTableSchema,
-  
-  // Fonctions spécifiques JPO
-  getJpoTables,
-  getAllRelations,
-  getTableConstraints,
-  
-  // Utilitaires
-  clearDatabaseCache,
-  getCacheStatus,
-  configureCacheDuration,
-  
-  // Classes
-  DatabaseDetails,
-};
-
-// === CONFIGURATION PAR DÉFAUT ===
+// Configuration par défaut
 export const DEFAULT_CONFIG = {
-  CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
+  CACHE_DURATION: 5 * 60 * 1000,
   ENABLE_LOGS: true,
   JPO_TABLES: [
     'campus', 'open_day', 'user', 'role', 

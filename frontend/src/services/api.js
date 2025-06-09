@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { API_CONFIG, buildUrl, log } from './apiConfig.js';
 
-// Classe d'erreur API avec messages traduits
+// Classe d'erreur API personnalisée
 export class ApiError extends Error {
   constructor(message, status = 0, data = null) {
     super(message);
@@ -11,7 +11,7 @@ export class ApiError extends Error {
     this.timestamp = new Date().toISOString();
   }
 
-  // Retourne message utilisateur selon le code d'erreur
+  // Obtenir un message d'erreur
   getUserMessage() {
     const { ERROR_MESSAGES } = API_CONFIG;
     
@@ -30,8 +30,8 @@ export class ApiError extends Error {
   }
 }
 
-// Fonction principale pour toutes les requêtes API
-const apiRequest = async (endpoint, options = {}) => {
+// Fonction principale de requête API
+export const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
   
@@ -41,6 +41,7 @@ const apiRequest = async (endpoint, options = {}) => {
     ...options,
   };
 
+  // Fusionner les headers
   if (options.headers) {
     config.headers = { ...config.headers, ...options.headers };
   }
@@ -58,10 +59,11 @@ const apiRequest = async (endpoint, options = {}) => {
     
     clearTimeout(timeoutId);
 
-    // Gestion des erreurs HTTP
+    // Vérifier le statut HTTP
     if (!response.ok) {
       let errorData = null;
       
+      // Essayer de récupérer les détails de l'erreur
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -83,7 +85,7 @@ const apiRequest = async (endpoint, options = {}) => {
       throw apiError;
     }
 
-    // Parse de la réponse
+    // Parser la réponse
     const contentType = response.headers.get('content-type');
     let data;
     
@@ -121,7 +123,12 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// API Endpoints
+apiRequest.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.object
+};
+
+// Fonctions API
 export const ping = async () => {
   return await apiRequest(API_CONFIG.ENDPOINTS.PING);
 };
@@ -135,6 +142,10 @@ export const getJpoList = async (params = {}) => {
   return await apiRequest(endpoint);
 };
 
+getJpoList.propTypes = {
+  params: PropTypes.object
+};
+
 export const getJpoById = async (id) => {
   if (!id) {
     throw new ApiError('ID requis pour récupérer une JPO', 400);
@@ -143,11 +154,19 @@ export const getJpoById = async (id) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO_BY_ID(id));
 };
 
+getJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
 export const createJpo = async (jpoData) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO, {
     method: 'POST',
     body: JSON.stringify(jpoData),
   });
+};
+
+createJpo.propTypes = {
+  jpoData: PropTypes.object.isRequired
 };
 
 export const updateJpo = async (id, jpoData) => {
@@ -159,6 +178,11 @@ export const updateJpo = async (id, jpoData) => {
     method: 'PUT',
     body: JSON.stringify(jpoData),
   });
+};
+
+updateJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  jpoData: PropTypes.object.isRequired
 };
 
 export const deleteJpo = async (id) => {
@@ -173,7 +197,11 @@ export const deleteJpo = async (id) => {
   return true;
 };
 
-// Utilitaires
+deleteJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
+// Fonctions utilitaires
 export const checkApiHealth = async () => {
   try {
     await ping();
@@ -190,52 +218,3 @@ export const getApiInfo = () => ({
   timeout: API_CONFIG.TIMEOUT,
   logsEnabled: API_CONFIG.ENABLE_LOGS,
 });
-
-export default {
-  ping,
-  getJpoList,
-  getJpoById,
-  createJpo,
-  updateJpo,
-  deleteJpo,
-  checkApiHealth,
-  getApiInfo,
-  ApiError,
-};
-
-apiRequest.propTypes = {
-  endpoint: PropTypes.string.isRequired,
-  options: PropTypes.shape({
-    method: PropTypes.string,
-    headers: PropTypes.object,
-    body: PropTypes.string,
-    signal: PropTypes.object
-  })
-};
-
-getJpoList.propTypes = {
-  params: PropTypes.object
-};
-
-getJpoById.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-};
-
-createJpo.propTypes = {
-  jpoData: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    date: PropTypes.string,
-    location: PropTypes.string,
-    capacity: PropTypes.number
-  }).isRequired
-};
-
-updateJpo.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  jpoData: PropTypes.object.isRequired
-};
-
-deleteJpo.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-};
