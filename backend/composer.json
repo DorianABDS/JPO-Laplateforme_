@@ -2,12 +2,15 @@
     "name": "jpo-laplateforme/backend",
     "description": "backend",
     "scripts": {
-    "lint": "phpcs --standard=PSR12 app core routes config"
+        "lint": "phpcs --standard=PSR12 app core routes config"
     },
     "autoload": {
         "psr-4": {
             "JpoLaplateforme\\Backend\\": "app/"
         }
+    },
+    "require": {
+        "php": ">=7.4.33"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13"
