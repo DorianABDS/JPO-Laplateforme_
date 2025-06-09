@@ -11,7 +11,6 @@ export const API_CONFIG = {
   },
   
   ENDPOINTS: {
-    // Endpoints existants
     PING: '/api/ping',
     JPO: '/api/jpo',
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
