@@ -1,35 +1,29 @@
 import PropTypes from 'prop-types';
 
 export const API_CONFIG = {
-  // URL de base de l'API (depuis les variables d'environnement)
+  // URL de base depuis les variables d'environnement
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
   
-  // Environnement actuel
   ENVIRONMENT: import.meta.env.VITE_APP_ENV || 'development',
+  TIMEOUT: 30000,
   
-  // Timeout pour les requêtes (en millisecondes)
-  TIMEOUT: 30000, // 30 secondes
-  
-  // Headers par défaut
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
   
-  // Endpoints de l'API
   ENDPOINTS: {
-    // Endpoints existants
     PING: '/api/ping',
     JPO: '/api/jpo',
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
     
-    // Nouveaux endpoints pour la base de données
+    // Endpoints de la base de données
     DATABASE_INFO: '/api/database/info',
     DATABASE_TABLE: (tableName) => `/api/database/table?table=${tableName}`,
     DATABASE_SCHEMA: '/api/database/schema',
     DATABASE_RELATIONS: '/api/database/relations',
     
-    // Endpoints pour les utilisateurs
+    // Endpoints utilisateurs
     USER_GET: (id) => `/api/user/get?id=${id}`,
     USER_UPDATE: (id) => `/api/user/update?id=${id}`,
     USER_CREATE: '/api/user/create',
@@ -37,7 +31,6 @@ export const API_CONFIG = {
     USER_LIST: '/api/user/list',
   },
   
-  // Messages d'erreur personnalisés
   ERROR_MESSAGES: {
     NETWORK: 'Problème de connexion réseau',
     SERVER: 'Erreur du serveur, veuillez réessayer',
@@ -52,11 +45,11 @@ export const API_CONFIG = {
     VALIDATION_ERROR: 'Données invalides',
   },
   
-  // Activer/désactiver les logs selon l'environnement
+  // Activer les logs uniquement en développement
   ENABLE_LOGS: import.meta.env.VITE_APP_ENV !== 'production',
 };
 
-// Fonction utilitaire pour construire les URLs
+// Construire l'URL complète depuis l'endpoint
 export const buildUrl = (endpoint) => {
   const baseUrl = API_CONFIG.BASE_URL.endsWith('/') 
     ? API_CONFIG.BASE_URL.slice(0, -1) 
@@ -69,12 +62,11 @@ export const buildUrl = (endpoint) => {
   return `${baseUrl}${cleanEndpoint}`;
 };
 
-// PropTypes pour buildUrl
 buildUrl.propTypes = {
   endpoint: PropTypes.string.isRequired
 };
 
-// Fonction pour logger uniquement en développement
+// Logger pour le développement
 export const log = (level, message, data = null) => {
   if (!API_CONFIG.ENABLE_LOGS) return;
   
@@ -96,7 +88,6 @@ export const log = (level, message, data = null) => {
   }
 };
 
-// PropTypes pour log
 log.propTypes = {
   level: PropTypes.oneOf(['error', 'warn', 'info', 'debug']).isRequired,
   message: PropTypes.string.isRequired,

@@ -2,14 +2,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { getJpoList, getJpoById, checkApiHealth, ApiError } from './api.js';
 
-// === HOOK GÉNÉRIQUE POUR LES REQUÊTES API ===
+// Hook générique pour les requêtes API
 const useApiRequest = (apiFunction, initialData = null) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const mountedRef = useRef(true);
 
-  // Fonction pour exécuter la requête
   const execute = useCallback(async (...args) => {
     if (!mountedRef.current) return;
     
@@ -39,7 +38,6 @@ const useApiRequest = (apiFunction, initialData = null) => {
     }
   }, [apiFunction]);
 
-  // Reset de l'état
   const reset = useCallback(() => {
     if (mountedRef.current) {
       setData(initialData);
@@ -48,7 +46,7 @@ const useApiRequest = (apiFunction, initialData = null) => {
     }
   }, [initialData]);
 
-  // Nettoyage à la destruction du composant
+  // Nettoyage du composant
   useEffect(() => {
     return () => {
       mountedRef.current = false;
@@ -64,7 +62,7 @@ const useApiRequest = (apiFunction, initialData = null) => {
   };
 };
 
-// === HOOK POUR LA LISTE DES JPO ===
+// Hook pour la liste des JPO
 export const useJpoList = (autoLoad = true, params = {}) => {
   const {
     data: jpos,
@@ -81,7 +79,6 @@ export const useJpoList = (autoLoad = true, params = {}) => {
     }
   }, [autoLoad, execute, JSON.stringify(params)]);
 
-  // Fonction pour recharger les données
   const reload = useCallback((newParams = params) => {
     return execute(newParams);
   }, [execute, params]);
@@ -95,7 +92,7 @@ export const useJpoList = (autoLoad = true, params = {}) => {
   };
 };
 
-// === HOOK POUR UNE JPO SPÉCIFIQUE ===
+// Hook pour une JPO spécifique
 export const useJpoById = (id, autoLoad = true) => {
   const {
     data: jpo,
@@ -112,7 +109,6 @@ export const useJpoById = (id, autoLoad = true) => {
     }
   }, [autoLoad, id, execute]);
 
-  // Fonction pour recharger les données
   const reload = useCallback((newId = id) => {
     if (!newId) {
       throw new Error('ID requis pour charger une JPO');
@@ -129,14 +125,13 @@ export const useJpoById = (id, autoLoad = true) => {
   };
 };
 
-// === HOOK POUR LE STATUT DE L'API ===
+// Hook pour la surveillance de la santé de l'API
 export const useApiHealth = (checkInterval = 30000) => {
   const [isHealthy, setIsHealthy] = useState(null);
   const [lastCheck, setLastCheck] = useState(null);
   const [checking, setChecking] = useState(false);
   const intervalRef = useRef(null);
 
-  // Fonction pour vérifier le statut
   const checkHealth = useCallback(async () => {
     setChecking(true);
     
@@ -152,17 +147,14 @@ export const useApiHealth = (checkInterval = 30000) => {
     }
   }, []);
 
-  // Configuration de la vérification périodique
+  // Configuration des vérifications périodiques de santé
   useEffect(() => {
-    // Première vérification
     checkHealth();
 
-    // Vérifications périodiques
     if (checkInterval > 0) {
       intervalRef.current = setInterval(checkHealth, checkInterval);
     }
 
-    // Nettoyage
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -178,7 +170,7 @@ export const useApiHealth = (checkInterval = 30000) => {
   };
 };
 
-// Props pour les hooks
+// PropTypes
 useApiRequest.propTypes = {
   apiFunction: PropTypes.func.isRequired,
   initialData: PropTypes.any
