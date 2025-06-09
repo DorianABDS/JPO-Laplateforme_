@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { getJpoList, getJpoById, checkApiHealth, ApiError } from './api.js';
 
@@ -72,18 +73,20 @@ export const useJpoList = (autoLoad = true, params = {}) => {
     reset
   } = useApiRequest(getJpoList, []);
 
-  // Mémoriser les paramètres pour éviter les re-rendus inutiles
+  // Mémoriser les paramètres pour éviter les re-rendus
   const memoizedParams = useMemo(() => params, [JSON.stringify(params)]);
-
+  
   // Chargement automatique au montage
   useEffect(() => {
     if (autoLoad) {
       execute(memoizedParams);
+      execute(memoizedParams);
     }
   }, [autoLoad, execute, memoizedParams]);
+  }, [autoLoad, execute, memoizedParams]);
 
-  const reload = useCallback((newParams = params) => {
-    return execute(newParams);
+  const reload = useCallback((newParams) => {
+    return execute(newParams || memoizedParams);
   }, [execute, memoizedParams]);
 
   return {
@@ -112,11 +115,12 @@ export const useJpoById = (id, autoLoad = true) => {
     }
   }, [autoLoad, id, execute]);
 
-  const reload = useCallback((newId = id) => {
-    if (!newId) {
+  const reload = useCallback((newId) => {
+    const targetId = newId || id;
+    if (!targetId) {
       throw new Error('ID requis pour charger une JPO');
     }
-    return execute(newId);
+    return execute(targetId);
   }, [execute, id]);
 
   return {
@@ -152,8 +156,10 @@ export const useApiHealth = (checkInterval = 30000) => {
 
   // Configuration des vérifications périodiques de santé
   useEffect(() => {
+    // Première vérification
     checkHealth();
 
+    // Vérifications périodiques
     if (checkInterval > 0) {
       intervalRef.current = setInterval(checkHealth, checkInterval);
     }
@@ -163,7 +169,7 @@ export const useApiHealth = (checkInterval = 30000) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [checkHealth, checkInterval]);
+  }, [checkInterval, checkHealth]);
 
   return {
     isHealthy,

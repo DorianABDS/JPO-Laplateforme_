@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 
 export const API_CONFIG = {
-  // URL de base depuis les variables d'environnement
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  // URL corrigée vers votre serveur de développement
+  BASE_URL: 'http://localhost:8000',
   
   ENVIRONMENT: import.meta.env.VITE_APP_ENV || 'development',
   TIMEOUT: 30000,
@@ -17,18 +17,26 @@ export const API_CONFIG = {
     JPO: '/api/jpo',
     JPO_BY_ID: (id) => `/api/jpo/${id}`,
     
-    // Endpoints de la base de données
+    // Endpoints corrigés selon votre index.php
+    USERS: '/api/users',                    // ← CORRIGÉ
+    USER_BY_ID: (id) => `/api/users/${id}`, // ← CORRIGÉ  
+    CAMPUS: '/api/campus',                  // ← AJOUTÉ
+    REGISTRATIONS: '/api/registrations',    // ← AJOUTÉ
+    COMMENTS: '/api/comments',              // ← AJOUTÉ
+    ROLES: '/api/roles',                    // ← AJOUTÉ
+    
+    // Anciens endpoints (à supprimer progressivement)
     DATABASE_INFO: '/api/database/info',
     DATABASE_TABLE: (tableName) => `/api/database/table?table=${tableName}`,
     DATABASE_SCHEMA: '/api/database/schema',
     DATABASE_RELATIONS: '/api/database/relations',
     
-    // Endpoints utilisateurs
-    USER_GET: (id) => `/api/user/get?id=${id}`,
-    USER_UPDATE: (id) => `/api/user/update?id=${id}`,
-    USER_CREATE: '/api/user/create',
-    USER_DELETE: (id) => `/api/user/delete?id=${id}`,
-    USER_LIST: '/api/user/list',
+    // Endpoints utilisateurs (CORRIGÉS)
+    USER_GET: (id) => `/api/users/${id}`,   // ← CORRIGÉ
+    USER_UPDATE: (id) => `/api/users/${id}`, // ← CORRIGÉ
+    USER_CREATE: '/api/users',              // ← CORRIGÉ
+    USER_DELETE: (id) => `/api/users/${id}`, // ← CORRIGÉ
+    USER_LIST: '/api/users',                // ← CORRIGÉ
   },
   
   ERROR_MESSAGES: {
