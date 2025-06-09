@@ -74,5 +74,9 @@ set_exception_handler(function ($exception) {
 try {
     require_once __DIR__ . '/../routes/api.php';
 } catch (Exception $e) {
-    throw $e;
+    Response::error(
+        'Erreur interne du serveur',
+        500,
+        $_ENV['APP_DEBUG'] === 'true' ? ['debug' => $e->getMessage()] : null
+    );
 }
