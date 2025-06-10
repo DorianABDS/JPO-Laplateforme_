@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { API_CONFIG, buildUrl, log } from './apiConfig.js';
 
 // Classe d'erreur API
+// Classe d'erreur API
 export class ApiError extends Error {
   constructor(message, status = 0, data = null) {
     super(message);
@@ -31,6 +32,8 @@ export class ApiError extends Error {
 
 // Requête API principale
 export const apiRequest = async (endpoint, options = {}) => {
+// Requête API principale
+export const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
   
@@ -51,6 +54,7 @@ export const apiRequest = async (endpoint, options = {}) => {
 
   try {
     log('info', `API Request: ${config.method} ${url}`);
+    log('info', `API Request: ${config.method} ${url}`);
     
     const response = await fetch(url, config);
     const duration = Date.now() - startTime;
@@ -69,6 +73,7 @@ export const apiRequest = async (endpoint, options = {}) => {
         }
       } catch (parseError) {
         log('warn', 'Cannot parse API error', parseError);
+        log('warn', 'Cannot parse API error', parseError);
       }
 
       const apiError = new ApiError(
@@ -77,6 +82,7 @@ export const apiRequest = async (endpoint, options = {}) => {
         errorData
       );
       
+      log('error', `API Error (${duration}ms):`, apiError);
       log('error', `API Error (${duration}ms):`, apiError);
       throw apiError;
     }
@@ -91,6 +97,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     }
 
     log('info', `API Success (${duration}ms): ${endpoint}`);
+    log('info', `API Success (${duration}ms): ${endpoint}`);
     return data;
 
   } catch (error) {
@@ -98,6 +105,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     
     if (error.name === 'AbortError') {
       const timeoutError = new ApiError('Délai d\'attente dépassé', 408);
+      log('error', 'API Timeout:', timeoutError);
       log('error', 'API Timeout:', timeoutError);
       throw timeoutError;
     }
@@ -114,6 +122,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     );
     
     log('error', 'Network Error:', networkError);
+    log('error', 'Network Error:', networkError);
     throw networkError;
   }
 };
@@ -122,7 +131,12 @@ apiRequest.propTypes = {
   endpoint: PropTypes.string.isRequired,
   options: PropTypes.object
 };
+apiRequest.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  options: PropTypes.object
+};
 
+// Fonctions API spécifiques
 // Fonctions API spécifiques
 export const ping = async () => {
   return await apiRequest(API_CONFIG.ENDPOINTS.PING);
@@ -141,6 +155,10 @@ getJpoList.propTypes = {
   params: PropTypes.object
 };
 
+getJpoList.propTypes = {
+  params: PropTypes.object
+};
+
 export const getJpoById = async (id) => {
   if (!id) {
     throw new ApiError('ID requis pour récupérer une JPO', 400);
@@ -153,11 +171,19 @@ getJpoById.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
+getJpoById.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
+
 export const createJpo = async (jpoData) => {
   return await apiRequest(API_CONFIG.ENDPOINTS.JPO, {
     method: 'POST',
     body: JSON.stringify(jpoData),
   });
+};
+
+createJpo.propTypes = {
+  jpoData: PropTypes.object.isRequired
 };
 
 createJpo.propTypes = {
@@ -180,6 +206,11 @@ updateJpo.propTypes = {
   jpoData: PropTypes.object.isRequired
 };
 
+updateJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  jpoData: PropTypes.object.isRequired
+};
+
 export const deleteJpo = async (id) => {
   if (!id) {
     throw new ApiError('ID requis pour supprimer une JPO', 400);
@@ -195,7 +226,11 @@ export const deleteJpo = async (id) => {
 deleteJpo.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
+deleteJpo.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+};
 
+// Utilitaires
 // Utilitaires
 export const checkApiHealth = async () => {
   try {
