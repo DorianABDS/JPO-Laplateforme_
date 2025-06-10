@@ -9,7 +9,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 // Connexion à la base de données
-require_once __DIR__ . '/../app/Config/database.php';
+require_once __DIR__ . '/../Config/database.php';
 
 // Chargement des variables d'environnement depuis le fichier .env
 $envFile = __DIR__ . '/../.env';
