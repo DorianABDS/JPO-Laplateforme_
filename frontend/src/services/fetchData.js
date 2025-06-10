@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { apiRequest } from './api.js';
 import { API_CONFIG } from './apiConfig.js';
 
-// Fonction universelle de récupération de données
+// Fonction universelle de récupération
 export const fetchData = async (endpoint, options = {}) => {
   try {
     let fullEndpoint = endpoint;
@@ -17,7 +17,7 @@ export const fetchData = async (endpoint, options = {}) => {
     return data;
     
   } catch (error) {
-    console.error(`❌ Erreur fetchData ${endpoint}:`, error);
+    console.error(`Erreur fetchData ${endpoint}:`, error);
     throw error;
   }
 };
@@ -27,7 +27,7 @@ fetchData.propTypes = {
   options: PropTypes.object
 };
 
-// Hook React pour la récupération automatique de données
+// Hook React pour récupération auto
 export const useFetchData = (endpoint, options = {}) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -64,9 +64,9 @@ useFetchData.propTypes = {
   options: PropTypes.object
 };
 
-// Fonctions spécifiques de récupération de données - ENDPOINTS CORRIGÉS
+// Fonctions spécialisées
 export const getUsers = async (params = {}) => {
-  return await fetchData(API_CONFIG.ENDPOINTS.USERS, params); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.USERS, params);
 };
 
 getUsers.propTypes = {
@@ -75,7 +75,7 @@ getUsers.propTypes = {
 
 export const getUser = async (userId) => {
   if (!userId) throw new Error('User ID requis');
-  return await fetchData(API_CONFIG.ENDPOINTS.USER_BY_ID(userId)); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.USER_BY_ID(userId));
 };
 
 getUser.propTypes = {
@@ -100,11 +100,11 @@ getJpo.propTypes = {
 };
 
 export const getCampus = async () => {
-  return await fetchData(API_CONFIG.ENDPOINTS.CAMPUS); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.CAMPUS);
 };
 
 export const getRegistrations = async (params = {}) => {
-  return await fetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params);
 };
 
 getRegistrations.propTypes = {
@@ -112,7 +112,7 @@ getRegistrations.propTypes = {
 };
 
 export const getComments = async (params = {}) => {
-  return await fetchData(API_CONFIG.ENDPOINTS.COMMENTS, params); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.COMMENTS, params);
 };
 
 getComments.propTypes = {
@@ -120,12 +120,12 @@ getComments.propTypes = {
 };
 
 export const getRoles = async () => {
-  return await fetchData(API_CONFIG.ENDPOINTS.ROLES); // ← CORRIGÉ
+  return await fetchData(API_CONFIG.ENDPOINTS.ROLES);
 };
 
-// Hooks React spécialisés - ENDPOINTS CORRIGÉS
+// Hooks React spécialisés
 export const useUsers = (params = {}) => {
-  return useFetchData(API_CONFIG.ENDPOINTS.USERS, params); // ← CORRIGÉ
+  return useFetchData(API_CONFIG.ENDPOINTS.USERS, params);
 };
 
 useUsers.propTypes = {
@@ -133,7 +133,7 @@ useUsers.propTypes = {
 };
 
 export const useUser = (userId) => {
-  const endpoint = userId ? API_CONFIG.ENDPOINTS.USER_BY_ID(userId) : null; // ← CORRIGÉ
+  const endpoint = userId ? API_CONFIG.ENDPOINTS.USER_BY_ID(userId) : null;
   return useFetchData(endpoint);
 };
 
@@ -142,11 +142,11 @@ useUser.propTypes = {
 };
 
 export const useCampus = () => {
-  return useFetchData(API_CONFIG.ENDPOINTS.CAMPUS); // ← CORRIGÉ
+  return useFetchData(API_CONFIG.ENDPOINTS.CAMPUS);
 };
 
 export const useRegistrations = (params = {}) => {
-  return useFetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params); // ← CORRIGÉ
+  return useFetchData(API_CONFIG.ENDPOINTS.REGISTRATIONS, params);
 };
 
 useRegistrations.propTypes = {
@@ -154,14 +154,14 @@ useRegistrations.propTypes = {
 };
 
 export const useComments = (params = {}) => {
-  return useFetchData(API_CONFIG.ENDPOINTS.COMMENTS, params); // ← CORRIGÉ
+  return useFetchData(API_CONFIG.ENDPOINTS.COMMENTS, params);
 };
 
 useComments.propTypes = {
   params: PropTypes.object
 };
 
-// Hook d'agrégation des données du tableau de bord
+// Hook dashboard avec données combinées
 export const useDashboardData = () => {
   const { data: users, loading: usersLoading } = useUsers();
   const { data: jpos, loading: jposLoading } = useFetchData(API_CONFIG.ENDPOINTS.JPO);
