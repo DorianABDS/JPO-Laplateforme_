@@ -1,6 +1,6 @@
-# 📋 Guide d'affichage des tables de base de données
+# 📋 Guide d'utilisation - FetchData
 
-Ce guide vous explique comment afficher les données de votre base MySQL dans vos composants React.
+Ce guide vous explique comment récupérer des données depuis la base de données en utilisant les fonctions et hooks personnalisés du module `fetchData.js`.
 
 ## 📦 Installation
 
@@ -11,26 +11,37 @@ Ce guide vous explique comment afficher les données de votre base MySQL dans vo
 
 ### Import
 ```javascript
-import { useFetchData, useUsers, useCampus } from '../services/fetchData.js';
+import { 
+  fetchData, 
+  useFetchData, 
+  useUsers, 
+  useUser,
+  useCampus,
+  useRegistrations,
+  useComments,
+  useDashboardData
+} from '../services/fetchData.js';
 ```
 
 ### Affichage automatique
 ```javascript
-const { data, loading, error } = useFetchData('/api/nom-de-votre-table');
+const { data, loading, error, refetch } = useFetchData('/api/endpoint');
 ```
 
 ---
 
-## 📊 Tables disponibles
+## 📊 Endpoints disponibles
 
-| Table | Endpoint | Hook spécialisé | Description |
-|-------|----------|----------------|-------------|
-| `user` | `/api/users` | `useUsers()` | Tous les utilisateurs |
-| `open_day` | `/api/jpo` | `useFetchData('/api/jpo')` | Journées Portes Ouvertes |
-| `campus` | `/api/campus` | `useCampus()` | Tous les campus |
-| `registration` | `/api/registrations` | `useFetchData('/api/registrations')` | Inscriptions aux JPO |
-| `comment` | `/api/comments` | `useFetchData('/api/comments')` | Commentaires |
-| `role` | `/api/roles` | `useFetchData('/api/roles')` | Rôles utilisateur |
+| Endpoint | Hook spécialisé | Description | Paramètres |
+|----------|----------------|-------------|------------|
+| `/api/users` | `useUsers(params)` | Tous les utilisateurs | `{ status, page, limit }` |
+| `/api/user/{id}` | `useUser(userId)` | Un utilisateur spécifique | - |
+| `/api/jpo` | `useFetchData('/api/jpo')` | Journées Portes Ouvertes | `{ startDate, status }` |
+| `/api/jpo/{id}` | `useFetchData('/api/jpo/{id}')` | Une JPO spécifique | - |
+| `/api/campus` | `useCampus()` | Tous les campus | - |
+| `/api/registrations` | `useRegistrations(params)` | Inscriptions aux JPO | `{ dateFrom, status }` |
+| `/api/comments` | `useComments(params)` | Commentaires | `{ status, limit }` |
+| `/api/roles` | `useFetchData('/api/roles')` | Rôles utilisateur | - |
 
 ---
 
@@ -41,17 +52,17 @@ const { data, loading, error } = useFetchData('/api/nom-de-votre-table');
 const UserList = () => {
   const { data: users, loading, error } = useUsers();
 
-  if (loading) return <div>Chargement...</div>;
-  if (error) return <div>Erreur: {error}</div>;
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
 
   return (
     <div>
       <h2>Utilisateurs ({users?.users?.length || 0})</h2>
       {users?.users?.map(user => (
-        <div key={user.user_id}>
+        <div key={user.user_id} className="border p-4 mb-2">
           <h3>{user.first_name} {user.last_name}</h3>
-          <p>Email: {user.email}</p>
-          <p>Type: {user.user_type}</p>
+          <p>📧 Email: {user.email}</p>
+          <p>👤 Type: {user.user_type}</p>
         </div>
       ))}
     </div>
@@ -59,21 +70,43 @@ const UserList = () => {
 };
 ```
 
-### 2. Afficher toutes les JPO
+### 2. Afficher un utilisateur spécifique
+```javascript
+const UserProfile = ({ userId }) => {
+  const { data: user, loading, error } = useUser(userId);
+
+  if (loading) return <div>⏳ Chargement du profil...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
+  if (!user) return <div>🚫 Utilisateur non trouvé</div>;
+
+  return (
+    <div className="bg-white p-6 rounded shadow">
+      <h2>👤 Profil de {user.first_name} {user.last_name}</h2>
+      <p>📧 Email: {user.email}</p>
+      <p>🏷️ Rôle: {user.user_type}</p>
+      <p>📅 Inscrit le: {user.created_at}</p>
+    </div>
+  );
+};
+```
+
+### 3. Afficher toutes les JPO
 ```javascript
 const JpoList = () => {
-  const { data: jpos, loading } = useFetchData('/api/jpo');
+  const { data: jpos, loading, error } = useFetchData('/api/jpo');
 
-  if (loading) return <div>Chargement des JPO...</div>;
+  if (loading) return <div>⏳ Chargement des JPO...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
 
   return (
     <div>
-      <h2>Journées Portes Ouvertes</h2>
+      <h2>🎯 Journées Portes Ouvertes ({jpos?.length || 0})</h2>
       {jpos?.map(jpo => (
-        <div key={jpo.jpo_id}>
-          <h3>{jpo.name}</h3>
-          <p>Date: {jpo.date}</p>
-          <p>Capacité: {jpo.max_capacity} personnes</p>
+        <div key={jpo.jpo_id} className="bg-blue-50 p-4 mb-3 rounded">
+          <h3>🏢 {jpo.name}</h3>
+          <p>📅 Date: {jpo.date}</p>
+          <p>👥 Capacité: {jpo.max_capacity} personnes</p>
+          <p>📍 Campus: {jpo.campus_name}</p>
         </div>
       ))}
     </div>
@@ -81,42 +114,111 @@ const JpoList = () => {
 };
 ```
 
-### 3. Afficher tous les campus
+### 4. Afficher une JPO spécifique
 ```javascript
-const CampusList = () => {
-  const { data: campus, loading } = useCampus();
+const JpoDetails = ({ jpoId }) => {
+  const { data: jpo, loading, error } = useFetchData(`/api/jpo/${jpoId}`);
+
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
 
   return (
-    <div>
-      <h2>Nos Campus</h2>
-      {loading ? (
-        <p>Chargement...</p>
-      ) : (
-        campus?.campus?.map(camp => (
-          <div key={camp.campus_id}>
-            <h3>{camp.name}</h3>
-            <p>Ville: {camp.city}</p>
-          </div>
-        ))
-      )}
+    <div className="bg-white p-6 rounded shadow">
+      <h2>🎯 {jpo?.name}</h2>
+      <p>📅 Date: {jpo?.date}</p>
+      <p>📍 Campus: {jpo?.campus_name}</p>
+      <p>👥 Capacité: {jpo?.max_capacity} personnes</p>
+      <p>📝 Description: {jpo?.description}</p>
     </div>
   );
 };
 ```
 
-### 4. Afficher les commentaires
+### 5. Afficher tous les campus
 ```javascript
-const CommentsList = () => {
-  const { data: comments, loading } = useFetchData('/api/comments');
+const CampusList = () => {
+  const { data: campus, loading, error } = useCampus();
+
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
 
   return (
     <div>
-      <h2>Commentaires</h2>
-      {comments?.map(comment => (
-        <div key={comment.comment_id} className="border p-4 mb-2">
-          <p>{comment.content}</p>
-          <small>Par utilisateur ID: {comment.user_id}</small>
-          <small>Date: {comment.comment_date}</small>
+      <h2>🏢 Nos Campus ({campus?.campus?.length || 0})</h2>
+      {campus?.campus?.map(camp => (
+        <div key={camp.campus_id} className="bg-green-50 p-4 mb-2 rounded">
+          <h3>📍 {camp.name}</h3>
+          <p>🏙️ Ville: {camp.city}</p>
+          <p>📬 Adresse: {camp.address}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+### 6. Afficher les inscriptions
+```javascript
+const RegistrationsList = () => {
+  const { data: registrations, loading, error } = useRegistrations();
+
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
+
+  return (
+    <div>
+      <h2>📝 Inscriptions ({registrations?.registrations?.length || 0})</h2>
+      {registrations?.registrations?.map(reg => (
+        <div key={reg.registration_id} className="border p-4 mb-2">
+          <p>👤 Utilisateur ID: {reg.user_id}</p>
+          <p>🎯 JPO ID: {reg.jpo_id}</p>
+          <p>📅 Date d'inscription: {reg.registration_date}</p>
+          <p>✅ Status: {reg.status}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+### 7. Afficher les commentaires
+```javascript
+const CommentsList = () => {
+  const { data: comments, loading, error } = useComments();
+
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
+
+  return (
+    <div>
+      <h2>💬 Commentaires ({comments?.comments?.length || 0})</h2>
+      {comments?.comments?.map(comment => (
+        <div key={comment.comment_id} className="bg-gray-50 p-4 mb-3 rounded">
+          <p>💭 {comment.content}</p>
+          <small>👤 Par utilisateur ID: {comment.user_id}</small>
+          <small>📅 Date: {comment.comment_date}</small>
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+### 8. Afficher les rôles
+```javascript
+const RolesList = () => {
+  const { data: roles, loading, error } = useFetchData('/api/roles');
+
+  if (loading) return <div>⏳ Chargement...</div>;
+  if (error) return <div>❌ Erreur: {error}</div>;
+
+  return (
+    <div>
+      <h2>🏷️ Rôles ({roles?.length || 0})</h2>
+      {roles?.map(role => (
+        <div key={role.role_id} className="bg-purple-50 p-3 mb-2 rounded">
+          <h3>🎭 {role.role_name}</h3>
+          <p>📝 Description: {role.description}</p>
         </div>
       ))}
     </div>
@@ -128,19 +230,17 @@ const CommentsList = () => {
 
 ## 🔍 Affichage avec filtres
 
-### Utilisateurs par type
+### Utilisateurs actifs uniquement
 ```javascript
-const StudentList = () => {
-  const { data: students } = useFetchData('/api/users', { 
-    user_type: 'student' 
-  });
+const ActiveUsers = () => {
+  const { data: activeUsers, loading } = useUsers({ status: 'active' });
 
   return (
     <div>
-      <h2>Étudiants</h2>
-      {students?.users?.map(student => (
-        <div key={student.user_id}>
-          {student.first_name} {student.last_name}
+      <h2>👥 Utilisateurs actifs</h2>
+      {activeUsers?.users?.map(user => (
+        <div key={user.user_id} className="p-2 border-b">
+          ✅ {user.first_name} {user.last_name}
         </div>
       ))}
     </div>
@@ -148,18 +248,21 @@ const StudentList = () => {
 };
 ```
 
-### JPO par campus
+### JPO par date
 ```javascript
-const JpoByEtablissement = () => {
-  const { data: jpoMarseille } = useFetchData('/api/jpo', { 
-    campus_id: 1 
+const UpcomingJpos = () => {
+  const { data: jpos } = useFetchData('/api/jpo', { 
+    startDate: '2025-01-01',
+    status: 'active' 
   });
 
   return (
     <div>
-      <h2>JPO Marseille</h2>
-      {jpoMarseille?.map(jpo => (
-        <div key={jpo.jpo_id}>{jpo.name}</div>
+      <h2>🗓️ JPO à venir</h2>
+      {jpos?.map(jpo => (
+        <div key={jpo.jpo_id} className="p-3 bg-blue-100 mb-2 rounded">
+          📅 {jpo.name} - {jpo.date}
+        </div>
       ))}
     </div>
   );
@@ -169,16 +272,14 @@ const JpoByEtablissement = () => {
 ### Inscriptions confirmées
 ```javascript
 const ConfirmedRegistrations = () => {
-  const { data: confirmed } = useFetchData('/api/registrations', { 
-    status: 'registered' 
-  });
+  const { data: confirmed } = useRegistrations({ status: 'confirmed' });
 
   return (
     <div>
-      <h2>Inscriptions confirmées</h2>
+      <h2>✅ Inscriptions confirmées</h2>
       {confirmed?.registrations?.map(reg => (
-        <div key={reg.registration_id}>
-          Utilisateur {reg.user_id} → JPO {reg.jpo_id}
+        <div key={reg.registration_id} className="p-2 bg-green-100 mb-2 rounded">
+          👤 Utilisateur {reg.user_id} → 🎯 JPO {reg.jpo_id}
         </div>
       ))}
     </div>
@@ -186,84 +287,22 @@ const ConfirmedRegistrations = () => {
 };
 ```
 
----
-
-## 🎯 Affichage d'un élément spécifique
-
-### Un utilisateur précis
+### Commentaires approuvés
 ```javascript
-const UserProfile = ({ userId }) => {
-  const { data: user, loading } = useFetchData(`/api/user/${userId}`);
-
-  if (loading) return <div>Chargement du profil...</div>;
+const ApprovedComments = () => {
+  const { data: comments } = useComments({ 
+    status: 'approved',
+    limit: 20 
+  });
 
   return (
     <div>
-      <h2>Profil de {user?.first_name} {user?.last_name}</h2>
-      <p>Email: {user?.email}</p>
-      <p>Type: {user?.user_type}</p>
-      <p>Inscrit le: {user?.created_at}</p>
-    </div>
-  );
-};
-```
-
-### Une JPO précise
-```javascript
-const JpoDetails = ({ jpoId }) => {
-  const { data: jpo, loading } = useFetchData(`/api/jpo/${jpoId}`);
-
-  if (loading) return <div>Chargement...</div>;
-
-  return (
-    <div>
-      <h2>{jpo?.name}</h2>
-      <p>Date: {jpo?.date}</p>
-      <p>Campus: {jpo?.campus_name}</p>
-      <p>Capacité: {jpo?.max_capacity} personnes</p>
-    </div>
-  );
-};
-```
-
----
-
-## 🔄 Chargement manuel (avec bouton)
-
-```javascript
-const DataOnDemand = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const loadUsers = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchData('/api/users');
-      setUsers(data.users || []);
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div>
-      <button 
-        onClick={loadUsers}
-        disabled={loading}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        {loading ? 'Chargement...' : 'Charger les utilisateurs'}
-      </button>
-      
-      <div>
-        {users.map(user => (
-          <div key={user.user_id}>
-            {user.first_name} {user.last_name}
-          </div>
-        ))}
-      </div>
+      <h2>✅ Commentaires approuvés</h2>
+      {comments?.comments?.map(comment => (
+        <div key={comment.comment_id} className="p-3 border-l-4 border-green-500 mb-2">
+          💬 {comment.content}
+        </div>
+      ))}
     </div>
   );
 };
@@ -275,31 +314,49 @@ const DataOnDemand = () => {
 
 ```javascript
 const Dashboard = () => {
-  const { data: users } = useUsers();
-  const { data: jpos } = useFetchData('/api/jpo');
-  const { data: campus } = useCampus();
-  const { data: registrations } = useFetchData('/api/registrations');
+  const { users, jpos, campus, loading } = useDashboardData();
+
+  if (loading) return <div>⏳ Chargement du tableau de bord...</div>;
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      <div className="bg-blue-100 p-4 rounded">
-        <h3>Utilisateurs</h3>
-        <p className="text-2xl font-bold">{users?.users?.length || 0}</p>
-      </div>
+    <div>
+      <h1>📊 Tableau de bord</h1>
       
-      <div className="bg-green-100 p-4 rounded">
-        <h3>JPO</h3>
-        <p className="text-2xl font-bold">{jpos?.length || 0}</p>
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-blue-100 p-4 rounded text-center">
+          <h3>👥 Utilisateurs</h3>
+          <p className="text-3xl font-bold text-blue-600">{users.length}</p>
+        </div>
+        
+        <div className="bg-green-100 p-4 rounded text-center">
+          <h3>🎯 JPO</h3>
+          <p className="text-3xl font-bold text-green-600">{jpos.length}</p>
+        </div>
+        
+        <div className="bg-purple-100 p-4 rounded text-center">
+          <h3>🏢 Campus</h3>
+          <p className="text-3xl font-bold text-purple-600">{campus.length}</p>
+        </div>
       </div>
-      
-      <div className="bg-purple-100 p-4 rounded">
-        <h3>Campus</h3>
-        <p className="text-2xl font-bold">{campus?.campus?.length || 0}</p>
-      </div>
-      
-      <div className="bg-orange-100 p-4 rounded">
-        <h3>Inscriptions</h3>
-        <p className="text-2xl font-bold">{registrations?.registrations?.length || 0}</p>
+
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <h3>👥 Derniers utilisateurs</h3>
+          {users.slice(0, 5).map(user => (
+            <div key={user.user_id} className="p-2 border-b">
+              {user.first_name} {user.last_name}
+            </div>
+          ))}
+        </div>
+        
+        <div>
+          <h3>🎯 Prochaines JPO</h3>
+          {jpos.slice(0, 5).map(jpo => (
+            <div key={jpo.jpo_id} className="p-2 border-b">
+              {jpo.name} - {jpo.date}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -308,54 +365,197 @@ const Dashboard = () => {
 
 ---
 
-## ⚙️ Configuration côté PHP
+## 🔄 Chargement manuel avec bouton
 
-Pour que ces exemples fonctionnent, vous devez créer les endpoints PHP correspondants :
+```javascript
+import { useState } from 'react';
+import { fetchData } from '../services/fetchData.js';
 
-```php
-// /api/users - Retourne tous les utilisateurs
-// /api/jpo - Retourne toutes les JPO
-// /api/campus - Retourne tous les campus
-// /api/registrations - Retourne toutes les inscriptions
-// /api/comments - Retourne tous les commentaires
-// /api/roles - Retourne tous les rôles
-```
+const DataOnDemand = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-**Format de réponse attendu :**
-```json
-{
-  "success": true,
-  "users": [...],  // ou "jpos", "campus", etc.
-}
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchData('/api/users');
+      setUsers(data.users || []);
+    } catch (error) {
+      console.error('❌ Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button 
+        onClick={loadUsers}
+        disabled={loading}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+      >
+        {loading ? '⏳ Chargement...' : '📥 Charger les utilisateurs'}
+      </button>
+      
+      <div className="mt-4">
+        {users.map(user => (
+          <div key={user.user_id} className="p-2 border-b">
+            👤 {user.first_name} {user.last_name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 ```
 
 ---
 
-## 🚨 Gestion d'erreurs
+## 🔄 Actualisation avec refetch
 
 ```javascript
-const SafeComponent = () => {
+const RefreshableUserList = () => {
+  const { data: users, loading, error, refetch } = useUsers();
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h2>👥 Liste des utilisateurs</h2>
+        <button 
+          onClick={refetch}
+          disabled={loading}
+          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+        >
+          {loading ? '⏳' : '🔄'} Actualiser
+        </button>
+      </div>
+      
+      {error && (
+        <div className="bg-red-100 p-3 rounded mb-4">
+          ❌ Erreur: {error}
+        </div>
+      )}
+      
+      {users?.users?.map(user => (
+        <div key={user.user_id} className="p-3 border rounded mb-2">
+          👤 {user.first_name} {user.last_name}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+---
+
+## 🎯 Composant avec navigation
+
+```javascript
+import { useState } from 'react';
+import { useUsers, useUser } from '../services/fetchData.js';
+
+const UserManager = () => {
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const { data: users, loading: usersLoading } = useUsers();
+  const { data: selectedUser, loading: userLoading } = useUser(selectedUserId);
+
+  if (usersLoading) return <div>⏳ Chargement...</div>;
+
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      {/* Liste des utilisateurs */}
+      <div>
+        <h2>👥 Tous les utilisateurs</h2>
+        {users?.users?.map(user => (
+          <div 
+            key={user.user_id}
+            onClick={() => setSelectedUserId(user.user_id)}
+            className={`p-3 border rounded mb-2 cursor-pointer hover:bg-gray-100 ${
+              selectedUserId === user.user_id ? 'bg-blue-100 border-blue-500' : ''
+            }`}
+          >
+            👤 {user.first_name} {user.last_name}
+          </div>
+        ))}
+      </div>
+      
+      {/* Détail de l'utilisateur sélectionné */}
+      <div>
+        {selectedUserId ? (
+          userLoading ? (
+            <div>⏳ Chargement du profil...</div>
+          ) : (
+            <div className="bg-white p-6 border rounded shadow">
+              <button 
+                onClick={() => setSelectedUserId(null)}
+                className="mb-4 text-blue-500 hover:underline"
+              >
+                ← Retour à la liste
+              </button>
+              <h2>👤 {selectedUser?.first_name} {selectedUser?.last_name}</h2>
+              <p>📧 Email: {selectedUser?.email}</p>
+              <p>🏷️ Type: {selectedUser?.user_type}</p>
+              <p>📅 Inscrit le: {selectedUser?.created_at}</p>
+            </div>
+          )
+        ) : (
+          <div className="text-center text-gray-500 p-8">
+            👆 Sélectionnez un utilisateur pour voir ses détails
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+```
+
+---
+
+## 🚨 Gestion d'erreurs complète
+
+```javascript
+const SafeDataComponent = () => {
   const { data, loading, error, refetch } = useFetchData('/api/users');
 
-  if (loading) return <div>⏳ Chargement...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <span className="ml-2">⏳ Chargement des données...</span>
+      </div>
+    );
+  }
   
   if (error) {
     return (
-      <div className="bg-red-100 p-4 rounded">
-        <p>❌ Erreur: {error}</p>
+      <div className="bg-red-50 border border-red-200 rounded p-4">
+        <div className="flex items-center mb-2">
+          <span className="text-red-500 text-xl mr-2">❌</span>
+          <h3 className="text-red-800 font-medium">Erreur de chargement</h3>
+        </div>
+        <p className="text-red-700 mb-3">{error}</p>
         <button 
           onClick={refetch}
-          className="bg-red-500 text-white p-2 rounded mt-2"
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
-          Réessayer
+          🔄 Réessayer
         </button>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="text-center p-8 text-gray-500">
+        <span className="text-4xl">📭</span>
+        <p>Aucune donnée disponible</p>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Votre contenu */}
+      {/* Votre contenu ici */}
     </div>
   );
 };
@@ -365,10 +565,20 @@ const SafeComponent = () => {
 
 ## 📝 Résumé
 
-**Pour afficher n'importe quelle table :**
+**Pour afficher n'importe quelle donnée :**
 
-1. **Import :** `import { useFetchData } from '../services/fetchData.js';`
-2. **Hook :** `const { data, loading, error } = useFetchData('/api/ma-table');`
+1. **Import :** `import { useFetchData, useUsers, etc. } from '../services/fetchData.js';`
+2. **Hook :** `const { data, loading, error, refetch } = useFetchData('/api/endpoint');`
 3. **Affichage :** `{data?.map(item => <div key={item.id}>{item.name}</div>)}`
 
-**C'est tout ! Trois lignes pour afficher n'importe quelles données de votre base MySQL.** 🚀
+**Endpoints disponibles :**
+- `GET /api/users` - Tous les utilisateurs
+- `GET /api/user/{id}` - Un utilisateur
+- `GET /api/jpo` - Toutes les JPO
+- `GET /api/jpo/{id}` - Une JPO
+- `GET /api/campus` - Tous les campus
+- `GET /api/registrations` - Toutes les inscriptions
+- `GET /api/comments` - Tous les commentaires
+- `GET /api/roles` - Tous les rôles
+
+**C'est tout ! Trois lignes pour afficher n'importe quelles données de votre base.** 🚀
