@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { apiRequest } from './api.js';
 import { API_CONFIG } from './apiConfig.js';
@@ -32,8 +32,11 @@ export const useFetchData = (endpoint, options = {}) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Serialize options for dependency array
+  const optionsString = JSON.stringify(options);
 
-  const fetchDataInternal = async () => {
+  const fetchDataInternal = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -45,11 +48,13 @@ export const useFetchData = (endpoint, options = {}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [endpoint, optionsString]);
 
   useEffect(() => {
-    fetchDataInternal();
-  }, [endpoint, JSON.stringify(options)]);
+    if (endpoint) {
+      fetchDataInternal();
+    }
+  }, [endpoint, fetchDataInternal]);
 
   return {
     data,
