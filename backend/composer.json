@@ -2,7 +2,7 @@
     "name": "jpo-laplateforme/backend",
     "description": "backend",
     "scripts": {
-        "lint": "phpcs --standard=PSR12 app core routes config"
+        "lint": "phpcs --standard=PSR12 app Core routes Config"
     },
     "autoload": {
         "psr-4": {
