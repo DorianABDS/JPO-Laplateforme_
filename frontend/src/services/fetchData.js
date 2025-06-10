@@ -123,7 +123,7 @@ export const getRoles = async () => {
   return await fetchData(API_CONFIG.ENDPOINTS.ROLES);
 };
 
-// Hooks React spécialisés - ENDPOINTS CORRIGÉS
+// Hooks React spécialisés
 export const useUsers = (params = {}) => {
   return useFetchData(API_CONFIG.ENDPOINTS.USERS, params);
 };

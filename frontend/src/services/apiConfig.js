@@ -32,10 +32,6 @@ export const API_CONFIG = {
     FORBIDDEN: 'Accès interdit',
     TIMEOUT: 'Délai d\'attente dépassé',
     UNKNOWN: 'Une erreur inattendue s\'est produite',
-    DATABASE_ERROR: 'Erreur lors de l\'accès à la base de données',
-    TABLE_NOT_FOUND: 'Table non trouvée dans la base de données',
-    USER_NOT_FOUND: 'Utilisateur non trouvé',
-    VALIDATION_ERROR: 'Données invalides',
   },
   
   ENABLE_LOGS: import.meta.env.VITE_APP_ENV !== 'production',
