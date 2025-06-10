@@ -4,7 +4,7 @@ namespace JpoLaplateforme\Backend\Controllers;
 
 use JpoLaplateforme\Backend\Core\Response;
 use JpoLaplateforme\Backend\Models\Jpo;
-use JpoLaplateforme\Backend\Config\Database;
+use JpoLaplateforme\Backend\Config\database;
 use Exception;
 
 class JpoController
