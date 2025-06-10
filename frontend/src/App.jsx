@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('debug');
-
   return (
     <div className="App">
-
+      {/* Content will be added here */}
     </div>
   );
 }
