@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { API_CONFIG, buildUrl, log } from './apiConfig.js';
 
-// Classe d'erreur API personnalisée
+// Classe d'erreur API
 export class ApiError extends Error {
   constructor(message, status = 0, data = null) {
     super(message);
@@ -11,7 +11,6 @@ export class ApiError extends Error {
     this.timestamp = new Date().toISOString();
   }
 
-  // Obtenir un message d'erreur
   getUserMessage() {
     const { ERROR_MESSAGES } = API_CONFIG;
     
@@ -30,7 +29,7 @@ export class ApiError extends Error {
   }
 }
 
-// Fonction principale de requête API
+// Requête API principale
 export const apiRequest = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const startTime = Date.now();
@@ -41,7 +40,6 @@ export const apiRequest = async (endpoint, options = {}) => {
     ...options,
   };
 
-  // Fusionner les headers
   if (options.headers) {
     config.headers = { ...config.headers, ...options.headers };
   }
@@ -52,18 +50,16 @@ export const apiRequest = async (endpoint, options = {}) => {
   config.signal = controller.signal;
 
   try {
-    log('info', `🚀 API Request: ${config.method} ${url}`);
+    log('info', `API Request: ${config.method} ${url}`);
     
     const response = await fetch(url, config);
     const duration = Date.now() - startTime;
     
     clearTimeout(timeoutId);
 
-    // Vérifier le statut HTTP
     if (!response.ok) {
       let errorData = null;
       
-      // Essayer de récupérer les détails de l'erreur
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -72,7 +68,7 @@ export const apiRequest = async (endpoint, options = {}) => {
           errorData = await response.text();
         }
       } catch (parseError) {
-        log('warn', 'Impossible de parser l\'erreur de l\'API', parseError);
+        log('warn', 'Cannot parse API error', parseError);
       }
 
       const apiError = new ApiError(
@@ -81,11 +77,10 @@ export const apiRequest = async (endpoint, options = {}) => {
         errorData
       );
       
-      log('error', `❌ API Error (${duration}ms):`, apiError);
+      log('error', `API Error (${duration}ms):`, apiError);
       throw apiError;
     }
 
-    // Parser la réponse
     const contentType = response.headers.get('content-type');
     let data;
     
@@ -95,7 +90,7 @@ export const apiRequest = async (endpoint, options = {}) => {
       data = await response.text();
     }
 
-    log('info', `✅ API Success (${duration}ms): ${endpoint}`, data);
+    log('info', `API Success (${duration}ms): ${endpoint}`);
     return data;
 
   } catch (error) {
@@ -103,7 +98,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     
     if (error.name === 'AbortError') {
       const timeoutError = new ApiError('Délai d\'attente dépassé', 408);
-      log('error', '⏰ API Timeout:', timeoutError);
+      log('error', 'API Timeout:', timeoutError);
       throw timeoutError;
     }
     
@@ -118,7 +113,7 @@ export const apiRequest = async (endpoint, options = {}) => {
       error
     );
     
-    log('error', '🌐 Network Error:', networkError);
+    log('error', 'Network Error:', networkError);
     throw networkError;
   }
 };
@@ -128,7 +123,7 @@ apiRequest.propTypes = {
   options: PropTypes.object
 };
 
-// Fonctions API
+// Fonctions API spécifiques
 export const ping = async () => {
   return await apiRequest(API_CONFIG.ENDPOINTS.PING);
 };
@@ -201,7 +196,7 @@ deleteJpo.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-// Fonctions utilitaires
+// Utilitaires
 export const checkApiHealth = async () => {
   try {
     await ping();
