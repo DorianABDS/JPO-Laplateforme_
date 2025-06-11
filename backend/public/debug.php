@@ -38,8 +38,8 @@ if (file_exists($dbPath)) {
 echo "<h3>5. Structure</h3>";
 $dirs = [
     'app' => __DIR__ . '/../app',
-    'app/Config' => __DIR__ . '/../app/Config',
-    'app/Core' => __DIR__ . '/../app/Core',
+    'Config' => __DIR__ . '/../Config',
+    'Core' => __DIR__ . '/../Core',
     'app/Controllers' => __DIR__ . '/../app/Controllers',
     'app/Models' => __DIR__ . '/../app/Models',
     'routes' => __DIR__ . '/../routes'

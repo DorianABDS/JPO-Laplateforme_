@@ -57,30 +57,28 @@ class Jpo
             $params['date_to'] = $filters['date_to'];
         }
 
+        // Recherche textuelle
         if (!empty($filters['search'])) {
             $conditions[] = "(od.name LIKE :search OR c.name LIKE :search OR c.city LIKE :search)";
             $params['search'] = '%' . $filters['search'] . '%';
         }
 
-        // Ajoute les conditions à la requête
+        // Ajouter les conditions WHERE si nécessaire
         if (!empty($conditions)) {
-            $sql .= " WHERE " . implode(" AND ", $conditions);
+            $sql .= " WHERE " . implode(' AND ', $conditions);
         }
 
-        // Regroupe les résultats et les trie par date
-        $sql .= " GROUP BY od.jpo_id, od.name, od.date, od.max_capacity, od.campus_id, c.name, c.city";
-        $sql .= " ORDER BY od.date ASC";
+        $sql .= " GROUP BY od.jpo_id ORDER BY od.date ASC";
 
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            throw new Exception("Erreur lors de la récupération des JPO : " . $e->getMessage());
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Récupère les détails d'une JPO par son ID
+    /**
+     * Récupère une JPO par son ID avec tous les détails
+     */
     public function getById(int $id): ?array
     {
         $sql = "
@@ -89,40 +87,37 @@ class Jpo
                 od.name,
                 od.date,
                 od.max_capacity,
-                od.campus_id,
+                c.campus_id,
                 c.name as campus_name,
                 c.city as campus_city,
-                COALESCE(COUNT(DISTINCT r.registration_id), 0) as registered_count,
-                COALESCE(COUNT(DISTINCT com.comment_id), 0) as comments_count
+                COUNT(DISTINCT r.registration_id) as registered_count,
+                COUNT(DISTINCT com.comment_id) as comments_count
             FROM open_day od
             LEFT JOIN campus c ON od.campus_id = c.campus_id
             LEFT JOIN registration r ON od.jpo_id = r.jpo_id AND r.status = 'registered'
             LEFT JOIN comment com ON od.jpo_id = com.jpo_id
             WHERE od.jpo_id = :id
-            GROUP BY od.jpo_id, od.name, od.date, od.max_capacity, od.campus_id, c.name, c.city
+            GROUP BY od.jpo_id
         ";
 
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['id' => $id]);
-            $jpo = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $jpo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Retourne null si la JPO n'existe pas
-            if (!$jpo) {
-                return null;
-            }
-
-            // Ajoute les commentaires liés à cette JPO
-            $jpo['comments'] = $this->getCommentsByJpoId($id);
-
-            return $jpo;
-        } catch (\PDOException $e) {
-            throw new Exception("Erreur lors de la récupération de la JPO : " . $e->getMessage());
+        if (!$jpo) {
+            return null;
         }
+
+        // Récupérer les commentaires séparément avec plus de détails
+        $jpo['comments'] = $this->getCommentsByJpo($id);
+
+        return $jpo;
     }
 
-    // Récupère tous les commentaires liés à une JPO
-    private function getCommentsByJpoId(int $jpoId): array
+    /**
+     * Récupère les commentaires d'une JPO
+     */
+    public function getCommentsByJpo(int $jpoId): array
     {
         $sql = "
             SELECT 
@@ -131,6 +126,7 @@ class Jpo
                 c.comment_date,
                 c.moderator_reply,
                 c.reply_date,
+                u.user_id,
                 u.first_name,
                 u.last_name,
                 u.user_type
@@ -140,12 +136,139 @@ class Jpo
             ORDER BY c.comment_date DESC
         ";
 
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['jpo_id' => $jpoId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            throw new Exception("Erreur lors de la récupération des commentaires : " . $e->getMessage());
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['jpo_id' => $jpoId]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère les inscriptions d'une JPO
+     */
+    public function getRegistrationsByJpo(int $jpoId): array
+    {
+        $sql = "
+            SELECT 
+                r.registration_id,
+                r.registration_date,
+                r.status,
+                u.user_id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.user_type
+            FROM registration r
+            LEFT JOIN user u ON r.user_id = u.user_id
+            WHERE r.jpo_id = :jpo_id
+            ORDER BY r.registration_date DESC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['jpo_id' => $jpoId]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Crée une nouvelle JPO
+     */
+    public function create(array $data): int
+    {
+        $sql = "
+            INSERT INTO open_day (name, date, max_capacity, campus_id)
+            VALUES (:name, :date, :max_capacity, :campus_id)
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'name' => $data['name'],
+            'date' => $data['date'],
+            'max_capacity' => $data['max_capacity'],
+            'campus_id' => $data['campus_id']
+        ]);
+
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    /**
+     * Met à jour une JPO
+     */
+    public function update(int $id, array $data): bool
+    {
+        $fields = [];
+        $params = ['id' => $id];
+
+        // Construire dynamiquement la requête UPDATE
+        if (isset($data['name'])) {
+            $fields[] = "name = :name";
+            $params['name'] = $data['name'];
         }
+
+        if (isset($data['date'])) {
+            $fields[] = "date = :date";
+            $params['date'] = $data['date'];
+        }
+
+        if (isset($data['max_capacity'])) {
+            $fields[] = "max_capacity = :max_capacity";
+            $params['max_capacity'] = $data['max_capacity'];
+        }
+
+        if (isset($data['campus_id'])) {
+            $fields[] = "campus_id = :campus_id";
+            $params['campus_id'] = $data['campus_id'];
+        }
+
+        if (empty($fields)) {
+            return false; // Rien à mettre à jour
+        }
+
+        $sql = "UPDATE open_day SET " . implode(', ', $fields) . " WHERE jpo_id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    /**
+     * Supprime une JPO
+     */
+    public function delete(int $id): bool
+    {
+        // Note: Dans un vrai projet, vous pourriez vouloir vérifier
+        // s'il y a des inscriptions ou commentaires avant de supprimer
+        
+        $sql = "DELETE FROM open_day WHERE jpo_id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+
+    /**
+     * Vérifie si une JPO existe
+     */
+    public function exists(int $id): bool
+    {
+        $sql = "SELECT COUNT(*) FROM open_day WHERE jpo_id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Récupère les statistiques générales
+     */
+    public function getStatistics(): array
+    {
+        $sql = "
+            SELECT 
+                COUNT(*) as total_jpo,
+                COUNT(CASE WHEN date >= CURDATE() THEN 1 END) as upcoming_jpo,
+                COUNT(CASE WHEN date < CURDATE() THEN 1 END) as past_jpo,
+                AVG(max_capacity) as avg_capacity
+            FROM open_day
+        ";
+
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

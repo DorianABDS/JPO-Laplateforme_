@@ -1,39 +1,12 @@
-# Configuration pour l'API JPO La Plateforme - Version WAMP
+# Fichier à créer dans : backend/public/.htaccess
 
-# Activer le module de réécriture
+# Headers CORS pour tous les fichiers
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+Header always set Access-Control-Max-Age "86400"
+
+# Répondre aux requêtes OPTIONS
 RewriteEngine On
-
-# Rediriger tout le trafic vers public/index.php si le fichier/dossier n'existe pas
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ public/index.php [QSA,L]
-
-# Répondre aux requêtes OPTIONS (preflight)
 RewriteCond %{REQUEST_METHOD} OPTIONS
-RewriteRule ^(.*)$ public/index.php [QSA,L]
-
-# Sécurité : Empêcher l'accès aux fichiers sensibles
-<Files ".env">
-    Require all denied
-</Files>
-
-<Files "composer.json">
-    Require all denied
-</Files>
-
-<Files "composer.lock">
-    Require all denied
-</Files>
-
-# Empêcher l'accès au dossier vendor
-<IfModule mod_rewrite.c>
-    RewriteRule ^vendor/.*$ - [F,L]
-</IfModule>
-
-# Configuration PHP
-<IfModule mod_php.c>
-    php_value upload_max_filesize 10M
-    php_value post_max_size 10M
-    php_value max_execution_time 30
-    php_value memory_limit 128M
-</IfModule>
+RewriteRule ^(.*)$ $1 [R=200,L]

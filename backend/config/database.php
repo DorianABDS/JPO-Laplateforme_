@@ -1,10 +1,10 @@
 <?php
 
-namespace JpoLaplateforme\Backend\Config;
+namespace Config;
 
+use Exception;
 use PDO;
 use PDOException;
-use Exception;
 
 class Database
 {
@@ -20,8 +20,7 @@ class Database
     {
         // Charge les variables d'env depuis .env
         $this->loadEnv();
-        
-        // Initialise les paramètres de connexion
+
         $this->host = $_ENV['DB_HOST'] ?? 'localhost';
         $this->dbname = $_ENV['DB_NAME'] ?? 'jpo-laplateforme_';
         $this->username = $_ENV['DB_USER'] ?? 'root';
@@ -36,31 +35,32 @@ class Database
     private function loadEnv()
     {
         $envFile = __DIR__ . '/../../.env';
-        
+
         if (!file_exists($envFile)) {
             // Si pas de .env, on continue avec les valeurs par défaut
             return;
         }
 
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
-                continue; // Ignore les commentaires
+                continue;
+            }
+
+            if (strpos($line, '=') !== false) {
+                list($name, $value) = explode('=', $line, 2);
+                $_ENV[trim($name)] = trim($value);
             }
         }
     }
 
-    /**
-     * Crée une connexion PDO si pas déjà connectée
-     * @return PDO
-     */
-    public function connect()
+    public function connect(): PDO
     {
         if ($this->pdo === null) {
             try {
                 $dsn = "mysql:host={$this->host};dbname={$this->dbname};port={$this->port};charset={$this->charset}";
-                
+
                 $options = [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -68,7 +68,6 @@ class Database
                 ];
 
                 $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
-                
             } catch (PDOException $e) {
                 throw new Exception("Erreur de connexion à la base de données : " . $e->getMessage());
             }
