@@ -1,8 +1,10 @@
 <?php
 
+namespace Config;
+
+use Exception;
 use PDO;
 use PDOException;
-use Exception;
 
 class Database
 {
@@ -18,8 +20,7 @@ class Database
     {
         // Charge les variables d'env depuis .env
         $this->loadEnv();
-        
-        // Initialise les paramètres de connexion
+
         $this->host = $_ENV['DB_HOST'] ?? 'localhost';
         $this->dbname = $_ENV['DB_NAME'] ?? 'jpo-laplateforme_';
         $this->username = $_ENV['DB_USER'] ?? 'root';
@@ -33,7 +34,11 @@ class Database
      */
     private function loadEnv()
     {
+<<<<<<< HEAD:backend/config/database.php
+        $envFile = __DIR__ . '/../.env';
+=======
         $envFile = __DIR__ . '/../../.env';
+>>>>>>> 33254d5 (refactor: clean up database connection code and improve default values):backend/app/Config/database.php
 
         if (!file_exists($envFile)) {
             // Si pas de .env, on continue avec les valeurs par défaut
@@ -41,7 +46,7 @@ class Database
         }
 
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
                 continue;
@@ -51,6 +56,12 @@ class Database
                 list($name, $value) = explode('=', $line, 2);
                 $_ENV[trim($name)] = trim($value);
             }
+<<<<<<< HEAD:backend/config/database.php
+
+            list($name, $value) = explode('=', $line, 2);
+            $_ENV[trim($name)] = trim($value);
+=======
+>>>>>>> 33254d5 (refactor: clean up database connection code and improve default values):backend/app/Config/database.php
         }
     }
 
@@ -59,7 +70,7 @@ class Database
         if ($this->pdo === null) {
             try {
                 $dsn = "mysql:host={$this->host};dbname={$this->dbname};port={$this->port};charset={$this->charset}";
-                
+
                 $options = [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -67,7 +78,6 @@ class Database
                 ];
 
                 $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
-                
             } catch (PDOException $e) {
                 throw new Exception("Erreur de connexion à la base de données : " . $e->getMessage());
             }
