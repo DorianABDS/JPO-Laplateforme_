@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Chargement des classes nécessaires avec les bons chemins
-require_once __DIR__ . '/../app/config/database.php';  // Version sans namespace
+require_once __DIR__ . '/../config/database.php';  // Version sans namespace
 
 // Créons temporairement la classe Response ici si elle n'existe pas
 if (!file_exists(__DIR__ . '/../Core/Response.php')) {
