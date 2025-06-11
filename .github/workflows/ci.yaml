@@ -29,7 +29,6 @@ jobs:
 
   lint-php:
     runs-on: ubuntu-latest
-    needs: lint-react
 
     steps:
       - name: Checkout code

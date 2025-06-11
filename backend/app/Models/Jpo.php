@@ -9,13 +9,14 @@ class Jpo
 {
     private PDO $pdo;
 
-    // Stocke la connexion à la base de données
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    // Récupère la liste des JPO avec filtres possibles
+    /**
+     * Récupère toutes les JPO avec filtres optionnels
+     */
     public function getAll(array $filters = []): array
     {
         $sql = "
@@ -24,29 +25,33 @@ class Jpo
                 od.name,
                 od.date,
                 od.max_capacity,
-                od.campus_id,
+                c.campus_id,
                 c.name as campus_name,
                 c.city as campus_city,
-                COALESCE(COUNT(r.registration_id), 0) as registered_count
+                COUNT(DISTINCT r.registration_id) as registered_count,
+                COUNT(DISTINCT com.comment_id) as comments_count
             FROM open_day od
             LEFT JOIN campus c ON od.campus_id = c.campus_id
             LEFT JOIN registration r ON od.jpo_id = r.jpo_id AND r.status = 'registered'
+            LEFT JOIN comment com ON od.jpo_id = com.jpo_id
         ";
 
         $conditions = [];
         $params = [];
 
-        // Ajoute les filtres à la requête si fournis
+        // Filtre par campus
         if (!empty($filters['campus_id'])) {
             $conditions[] = "od.campus_id = :campus_id";
             $params['campus_id'] = $filters['campus_id'];
         }
 
+        // Filtre par date de début
         if (!empty($filters['date_from'])) {
             $conditions[] = "od.date >= :date_from";
             $params['date_from'] = $filters['date_from'];
         }
 
+        // Filtre par date de fin
         if (!empty($filters['date_to'])) {
             $conditions[] = "od.date <= :date_to";
             $params['date_to'] = $filters['date_to'];

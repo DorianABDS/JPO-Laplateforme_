@@ -1,3 +1,5 @@
+<?php
+
 namespace JpoLaplateforme\Backend\Controllers;
 
 use JpoLaplateforme\Backend\Core\Response;

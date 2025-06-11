@@ -4,7 +4,7 @@ namespace JpoLaplateforme\Backend\Controllers;
 
 use JpoLaplateforme\Backend\Core\Response;
 use JpoLaplateforme\Backend\Models\Jpo;
-use JpoLaplateforme\Backend\Config\Database;
+use JpoLaplateforme\Backend\Config\database;
 use Exception;
 
 class JpoController
@@ -41,7 +41,7 @@ class JpoController
                 return;
             }
 
-            // Supprime les filtres vides pour éviter d’envoyer des valeurs nulles
+            // Supprime les filtres vides pour éviter d'envoyer des valeurs nulles
             $filters = array_filter($filters, fn($value) => $value !== null && $value !== '');
 
             // Récupère les JPO depuis le modèle
@@ -56,7 +56,6 @@ class JpoController
                 'count' => count($formattedJpos),
                 'filters_applied' => $filters
             ]);
-
         } catch (Exception $e) {
             // En cas d'erreur, envoie une erreur générique (avec debug si activé)
             Response::error(
@@ -76,7 +75,7 @@ class JpoController
         try {
             $id = $params['id'] ?? null;
 
-            // Vérifie que l’ID est valide (existe et est un nombre)
+            // Vérifie que l'ID est valide (existe et est un nombre)
             if (!$id || !is_numeric($id)) {
                 Response::error('ID invalide', 400);
                 return;
@@ -85,7 +84,7 @@ class JpoController
             $id = (int) $id;
             $jpo = $this->jpoModel->getById($id);
 
-            // Si la JPO n’existe pas, envoie une 404
+            // Si la JPO n'existe pas, envoie une 404
             if (!$jpo) {
                 Response::error('JPO non trouvée', 404);
                 return;
@@ -94,7 +93,6 @@ class JpoController
             // Formate la JPO pour la réponse
             $formattedJpo = $this->formatJpoForDetails($jpo);
             Response::success($formattedJpo);
-
         } catch (Exception $e) {
             Response::error(
                 'Erreur lors de la récupération de la JPO',
@@ -139,7 +137,7 @@ class JpoController
         return $d && $d->format('Y-m-d') === $date;
     }
 
-    // Formate les données d’une JPO pour la liste
+    // Formate les données d'une JPO pour la liste
     private function formatJpoForList(array $jpo): array
     {
         return [
@@ -161,7 +159,7 @@ class JpoController
         ];
     }
 
-    // Formate les données d’une JPO détaillée pour la vue complète
+    // Formate les données d'une JPO détaillée pour la vue complète
     private function formatJpoForDetails(array $jpo): array
     {
         $formatted = $this->formatJpoForList($jpo);
@@ -170,13 +168,13 @@ class JpoController
         $formatted['statistics'] = [
             'registered_count' => (int) $jpo['registered_count'],
             'comments_count' => (int) $jpo['comments_count'],
-            'capacity_percentage' => $jpo['max_capacity'] > 0 
+            'capacity_percentage' => $jpo['max_capacity'] > 0
                 ? round(((int) $jpo['registered_count'] / (int) $jpo['max_capacity']) * 100, 2)
                 : 0
         ];
 
         // Ajoute les commentaires avec leur auteur et réponse modérateur si existante
-        $formatted['comments'] = array_map(function($comment) {
+        $formatted['comments'] = array_map(function ($comment) {
             return [
                 'id' => (int) $comment['comment_id'],
                 'content' => $comment['content'],

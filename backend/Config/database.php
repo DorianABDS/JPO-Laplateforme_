@@ -1,7 +1,5 @@
 <?php
 
-namespace JpoLaplateforme\Backend\Config;
-
 use PDO;
 use PDOException;
 use Exception;
@@ -36,7 +34,7 @@ class Database
     private function loadEnv()
     {
         $envFile = __DIR__ . '/../../.env';
-        
+
         if (!file_exists($envFile)) {
             // Si pas de .env, on continue avec les valeurs par défaut
             return;
@@ -46,16 +44,17 @@ class Database
         
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
-                continue; // Ignore les commentaires
+                continue;
+            }
+
+            if (strpos($line, '=') !== false) {
+                list($name, $value) = explode('=', $line, 2);
+                $_ENV[trim($name)] = trim($value);
             }
         }
     }
 
-    /**
-     * Crée une connexion PDO si pas déjà connectée
-     * @return PDO
-     */
-    public function connect()
+    public function connect(): PDO
     {
         if ($this->pdo === null) {
             try {
