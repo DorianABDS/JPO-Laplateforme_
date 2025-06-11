@@ -6,7 +6,9 @@
     },
     "autoload": {
         "psr-4": {
-            "JpoLaplateforme\\Backend\\": "app/"
+            "JpoLaplateforme\\Backend\\": "app/",
+            "JpoLaplateforme\\Backend\\Core\\": "Core/",
+            "Config\\": "Config/"
         }
     },
     "require": {
