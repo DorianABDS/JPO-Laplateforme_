@@ -136,7 +136,7 @@ try {
     }
 
     // Temporarily comment out all other routes until we have the files
-    /*
+    
     // Routes JPO
     if (preg_match('/^\/api\/jpo(?:\/(\d+))?(?:\/(\w+))?$/', $path, $matches)) {
         $controller = new JpoController();
@@ -328,7 +328,7 @@ try {
         }
         exit();
     }
-    */
+    
 
     // Route racine - Documentation de l'API
     if ($path === '/' || $path === '/api') {
